@@ -35,3 +35,8 @@
 - Common Loot Drop Weight: 70
 - Rare Loot Drop Weight: 25
 - Epic Loot Drop Weight: 5
+
+## Weapon Modifier Stacking Math
+- `ADD` operations stack additively: $Stat_{base} + \sum Value_{add}$
+- `MULTIPLY` operations stack additively relative to base: $(Stat_{base} + \sum Value_{add}) \times (1.0 + \sum Value_{mult})$
+- `SET` operations override all previous base and additive values.

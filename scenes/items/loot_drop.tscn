@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://e4x2v9n1m7k8b"]
+
+[ext_resource type="Script" path="res://scripts/inventory/loot_drop.gd" id="1_loot"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_loot"]
+radius = 8.0
+
+[node name="LootDrop" type="Area2D" groups=["loot"]]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_loot")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.85, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_loot")

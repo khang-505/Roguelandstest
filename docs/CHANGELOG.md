@@ -3,23 +3,17 @@
 ## [0.1.0] - 2026-08-21
 
 ### Added
-- Created complete Phase 1 project foundation for **Starfall Frontier**.
-- Configured Godot 4 `project.godot` with 480x270 pixel-art resolution settings and input mapping bindings (`move_left`, `move_right`, `jump`, `dash`, `attack`, `interact`, `ability`).
-- Implemented core Autoload singletons:
-  - `EventBus` (`scripts/core/event_bus.gd`) for decoupled game signals.
-  - `GameManager` (`scripts/core/game_manager.gd`) for centralized state machine management.
-- Built data resource architectures: `WeaponData`, `ItemData`, `EnemyData`.
-- Implemented `CharacterBody2D` Player Controller featuring coyote time (0.15s), jump buffering (0.1s), invincible dash, and attack triggers.
-- Implemented reusable `Hitbox` and `Hurtbox` combat components.
-- Implemented "Ash Beetle" original biome enemy with state machine (`IDLE`, `PATROL`, `CHASE`, `ATTACK`, `DEAD`), damage flashing, floating combat text, and loot drop generation.
-- Implemented deterministic seeded `RoomGenerator` with platform tile building, hazard placement, and portal creation.
-- Implemented Loot Drop entity (`loot_drop.gd`) with magnet pickup logic and inventory integration.
-- Implemented complete UI overlay suite: HUD (HP, Energy, Active Weapon, Loot counter), Main Menu, and Game Over / Restart dialog.
-- Added context documentation suite: `AI_CONTEXT.md`, `PROGRESS.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `GAME_DESIGN.md`, `BALANCE.md`, `CHANGELOG.md`.
+- **Phase 1.0 (Foundation)**: Project infrastructure, `project.godot`, documentation core, `GameManager`, `EventBus`, `WorldManager`, `SaveManager`, and data model resources (`WeaponData`, `ItemData`, `EnemyData`, `LootTableData`).
+- **Phase 1.1 (Player Slice)**: `CharacterBody2D` platformer movement controller with acceleration, deceleration, variable jump, coyote time (0.15s), jump buffering (0.10s), invincible dash (0.2s duration, 0.8s cooldown), facing direction, and camera follow scene (`player.tscn`).
+- **Phase 1.2 (Combat Slice)**: Component-based `Hitbox` and `Hurtbox` systems with armor mitigation, critical hit calculation, knockback vectors, and "Ash Beetle" enemy AI state machine (`IDLE`, `PATROL`, `CHASE`, `ATTACK`, `STUNNED`, `DEAD`).
+- **Phase 1.3 (Procedural World Slice)**: Deterministic seeded `RoomGenerator` creating platforms, player spawn markers, extraction portal, enemy spawners, and loot positions with topological connectivity validation tested across 100 seeds.
+- **Phase 1.4 (Game Loop Slice)**: `LootDrop` resource entity with magnet attraction logic, `HUDController` overlay showing real-time player stats, `MainMenu` dialog, `GameOverScreen` summary, and `main.gd` master orchestration.
+- **Phase 1.5 (Verification & Documentation)**: Comprehensive test suite runner (`test_master_runner.gd`) executing unit tests across all Phase 1 modules.
 
-### Tests
-- Player Movement & Dash Physics: PASS
-- Combat Hitbox/Hurtbox Damage & Knockback: PASS
-- Enemy FSM & Loot Dropping: PASS
-- Seeded Procedural Room Generation: PASS
-- HUD Status Update & Game Over Loop: PASS
+### Git Commits
+- `phase-1.0-foundation`
+- `phase-1.1-player`
+- `phase-1.2-combat`
+- `phase-1.3-procedural-world`
+- `phase-1.4-game-loop`
+- `phase-1.5-verification`

@@ -1,0 +1,17 @@
+# Godot 4.x .gitignore
+
+.godot/
+*.import
+export_presets.cfg
+
+# Executables
+*.apk
+*.aab
+*.exe
+*.zip
+
+# System & OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.log

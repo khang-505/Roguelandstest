@@ -1,0 +1,64 @@
+; Engine configuration file.
+; Format: config_version=5
+
+config_version=5
+
+[application]
+
+config/name="Starfall Frontier"
+config/description="A 2D sci-fi action roguelite RPG with procedural planets, resource gathering, fast combat, and permanent progression."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.2", "2D", "Forward Plus")
+
+[autoload]
+
+EventBus="*res://scripts/core/event_bus.gd"
+GameManager="*res://scripts/core/game_manager.gd"
+WorldManager="*res://scripts/core/world_manager.gd"
+SaveManager="*res://scripts/core/save_manager.gd"
+
+[display]
+
+window/size/viewport_width=480
+window/size/viewport_height=270
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+2d/snap/transform_coords=true
+
+[input]
+
+move_left={
+"deadzone": 0.5,
+"events": []
+}
+move_right={
+"deadzone": 0.5,
+"events": []
+}
+jump={
+"deadzone": 0.5,
+"events": []
+}
+dash={
+"deadzone": 0.5,
+"events": []
+}
+attack={
+"deadzone": 0.5,
+"events": []
+}
+interact={
+"deadzone": 0.5,
+"events": []
+}
+ability={
+"deadzone": 0.5,
+"events": []
+}

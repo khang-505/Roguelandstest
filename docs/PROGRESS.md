@@ -1,31 +1,27 @@
 # Development Progress - Starfall Frontier
 
 ## Current Phase
-Phase 2 — Weapon Modifiers, Item Rarities, Elemental Status & Extended Biomes
+Phase 3 — Hub World, Base Building, Research Lab & Companion Drones
 
 ## Current Milestone
-Phase 2.5 — Integration & Regression Testing (Phase 2 COMPLETE)
+Phase 3.0 — Persistent Hub World (COMPLETE)
 
 ## Overall Progress
-75 / 100 tasks completed (Phase 2 100% Complete)
+82 / 100 tasks completed
 
 ## Completed
 - [x] Phase 1 — Foundation & First Playable Slice (Complete & Pushed to GitHub)
-- [x] Phase 2.0 — Weapon Modifier Engine & Random Affix Generator (`modifier_generator.gd`, deterministic seeded generation, category compatibility validation, stacking math rules in `BALANCE.md`)
-- [x] Phase 2.1 — Item Rarity System & Weighted Table Engine (`rarity_data.gd`, Common 60%, Uncommon 25%, Rare 10%, Epic 4%, Legendary 0.9%, Mythic 0.1%, modifier count bounds, 10,000-roll statistical test)
-- [x] Phase 2.2 — Weapon Categories & Special Effects (Plasma Cutter, Void Blade, Frost Rifle, Ember Staff, `projectile.tscn`, `weapon_effect.gd`)
-- [x] Phase 2.3 — Elemental Status Engine (`status_effect_manager.gd`, Burn DoT, Freeze slow, Shock chain, Decay armor, Poison stacking up to 5 stacks, safe tree_exiting cleanup)
-- [x] Phase 2.4 — Extended Biomes (`biome_data.gd`, Emberwild, Frostgrave, Verdant Abyss, 300-seed path reachability validation)
-- [x] Phase 2.5 — Integration & Regression Suite (`test_phase2_runner.gd`, 0 regressions across all Phase 1 & 2 suites)
+- [x] Phase 2 — Weapon Modifiers, Rarities, Status Engine & Extended Biomes (Complete & Pushed to GitHub)
+- [x] Phase 3.0 — Persistent Hub World & Base Level Evolution (`hub_controller.gd`, `station_base.gd`, `hub.tscn`, Hub Levels 1-4, atomic currency upgrade transactions, deployment console)
 
 ## In Progress
-- None (Phase 2 Complete)
+- [ ] Phase 3.1 — Forge & Data-Driven Recipe Crafting Station
 
 ## Blocked
 - None
 
-## Current Status
-Phase 2 fully implemented, tested, verified, documented, and committed to Git repository (`https://github.com/khang-505/Roguelandstest.git`).
+## Current Task
+Completed Phase 3.0 verification and Git commit (`phase-3.0-persistent-hub`).
 
-## Next Phase
-Phase 3 — Hub World, Base Building, Research Lab & Companion Drones.
+## Next Milestone
+Phase 3.1 — Forge & Data-Driven Recipe Crafting Station.

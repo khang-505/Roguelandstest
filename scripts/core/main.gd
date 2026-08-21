@@ -2,9 +2,10 @@
 class_name MainController
 extends Node2D
 
-## Main scene controller connecting Main Menu, Procedural Level, HUD, and Game Over flow.
+## Main scene controller connecting Main Menu, Hub Base, Procedural Level, HUD, and Game Over flow.
 
 const MAIN_MENU_SCENE = preload("res://scenes/ui/main_menu.tscn")
+const HUB_SCENE = preload("res://scenes/hub/hub.tscn")
 const LEVEL_STAGE_SCENE = preload("res://scenes/world/level_stage.tscn")
 const PLAYER_SCENE = preload("res://scenes/player/player.tscn")
 const ASH_BEETLE_SCENE = preload("res://scenes/enemies/ash_beetle.tscn")
@@ -25,6 +26,8 @@ func _on_game_state_changed(_old_state: int, new_state: int) -> void:
 	match new_state:
 		GameManager.GameState.MAIN_MENU:
 			_show_main_menu()
+		GameManager.GameState.HUB:
+			_show_hub_world()
 		GameManager.GameState.WORLD_GENERATION:
 			_build_expedition_world()
 		GameManager.GameState.DEATH:
@@ -36,6 +39,19 @@ func _show_main_menu() -> void:
 		current_ui.queue_free()
 	current_ui = MAIN_MENU_SCENE.instantiate()
 	add_child(current_ui)
+
+func _show_hub_world() -> void:
+	_clear_world()
+	if current_ui:
+		current_ui.queue_free()
+		
+	current_level = HUB_SCENE.instantiate()
+	add_child(current_level)
+	
+	# Spawn player in Hub
+	current_player = PLAYER_SCENE.instantiate() as CharacterBody2D
+	current_player.global_position = Vector2(50, 230)
+	current_level.add_child(current_player)
 
 func _build_expedition_world() -> void:
 	_clear_world()

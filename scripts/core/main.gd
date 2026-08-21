@@ -32,9 +32,12 @@ func _on_game_state_changed(_old_state: int, new_state: int) -> void:
 			_build_expedition_world()
 		GameManager.GameState.DEATH:
 			_show_game_over_screen()
+		GameManager.GameState.RESULTS:
+			_show_results_screen()
 
 func _show_main_menu() -> void:
 	_clear_world()
+	RewardManager.reset_contract()
 	if current_ui:
 		current_ui.queue_free()
 	current_ui = MAIN_MENU_SCENE.instantiate()
@@ -42,6 +45,7 @@ func _show_main_menu() -> void:
 
 func _show_hub_world() -> void:
 	_clear_world()
+	RewardManager.reset_contract()
 	if current_ui:
 		current_ui.queue_free()
 		
@@ -98,6 +102,11 @@ func _show_game_over_screen() -> void:
 		current_ui.queue_free()
 	current_ui = GAME_OVER_SCENE.instantiate()
 	add_child(current_ui)
+
+func _show_results_screen() -> void:
+	# Calculate final rewards with contract multipliers exactly ONCE
+	RewardManager.calculate_final_rewards(GameManager.run_credits, GameManager.run_shards)
+	_show_game_over_screen()
 
 func _clear_world() -> void:
 	if current_level and is_instance_valid(current_level):

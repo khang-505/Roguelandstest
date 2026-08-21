@@ -1,30 +1,26 @@
 # Development Progress - Starfall Frontier
 
 ## Current Phase
-Phase 1 — Foundation & First Playable Slice
+Phase 2 — Weapon Modifiers, Item Rarities, Elemental Status & Extended Biomes
 
 ## Current Milestone
-Phase 1.5 — Verification & Documentation (Phase 1 COMPLETE)
+Phase 2.0 — Weapon Modifier Engine (COMPLETE)
 
 ## Overall Progress
-35 / 100 tasks completed (Phase 1 100% Complete)
+42 / 100 tasks completed
 
 ## Completed
-- [x] Phase 1.0 — Foundation setup & repository context architecture
-- [x] Phase 1.1 — Player Slice (`player_controller.gd`, coyote time, jump buffering, dash i-frames, camera follow)
-- [x] Phase 1.2 — Combat Slice (`hitbox.gd`, `hurtbox.gd`, damage calculations, Ash Beetle FSM AI)
-- [x] Phase 1.3 — Procedural World Slice (`room_generator.gd`, seed determinism, 100-seed connectivity test)
-- [x] Phase 1.4 — Game Loop Slice (`loot_drop.gd`, HUD, Main Menu, Game Over UI, `main.gd` loop)
-- [x] Phase 1.5 — Verification & Documentation (`test_master_runner.gd`, full test suite execution, Git commit)
+- [x] Phase 1 — Foundation & First Playable Slice (Complete & Pushed to GitHub)
+- [x] Phase 2.0 — Weapon Modifier Engine & Random Affix Generator (`modifier_generator.gd`, deterministic seeded generation, category compatibility validation, stacking math rules in `BALANCE.md`)
 
 ## In Progress
-- None (Phase 1 Complete)
+- [ ] Phase 2.1 — Item Rarity System & Weighted Table Engine
 
 ## Blocked
 - None
 
-## Current Status
-Phase 1 Vertical Slice fully implemented, verified, tested, documented, and committed to Git repository (`https://github.com/khang-505/Roguelandstest.git`).
+## Current Task
+Completed Phase 2.0 verification and Git commit (`phase-2.0-modifier-engine`).
 
-## Next Phase
-Phase 2 — Weapon Modifiers, Affix Engine, Item Rarities & Extended Biomes.
+## Next Milestone
+Phase 2.1 — Item Rarity System & Weighted Table Engine.

@@ -21,8 +21,8 @@ func prepare_world(seed_val: int, biome_id: String = "emberwild") -> void:
 	is_world_active = true
 	EventBus.world_generated.emit(current_world_seed, current_biome_id)
 
-func set_extraction_ready(ready: bool) -> void:
-	extraction_unlocked = ready
+func set_extraction_ready(p_ready: bool) -> void:
+	extraction_unlocked = p_ready
 
 func increase_instability(amount: float) -> void:
 	instability_level = clamp(instability_level + amount, 0.0, 100.0)

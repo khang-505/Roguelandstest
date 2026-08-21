@@ -10,8 +10,8 @@ extends Resource
 @export var background_color: Color = Color(0.12, 0.05, 0.05, 1.0)
 @export var hazard_type: String = "LAVA"
 @export var instability_rate: float = 1.0 # Multiplier per minute
-@export var enemy_pool: Array[String] = ["ash_beetle"]
-@export var resource_pool: Array[String] = ["ember_ore", "star_shard"]
+@export var enemy_pool: Array = ["ash_beetle"]
+@export var resource_pool: Array = ["ember_ore", "star_shard"]
 
 static var biome_registry: Dictionary = {}
 

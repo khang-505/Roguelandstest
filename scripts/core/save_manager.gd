@@ -6,15 +6,24 @@ extends Node
 
 const SAVE_PATH: String = "user://save.json"
 const SAVE_BACKUP_PATH: String = "user://save.backup.json"
-const CURRENT_SAVE_VERSION: int = 1
+const CURRENT_SAVE_VERSION: int = 2
 
 var profile_data: Dictionary = {
 	"save_version": CURRENT_SAVE_VERSION,
 	"total_credits": 0,
 	"total_shards": 0,
-	"unlocked_origins": ["Vanguard"],
-	"unlocked_recipes": ["plasma_cutter"],
 	"hub_level": 1,
+	"active_origin": "vanguard",
+	"unlocked_origins": ["vanguard"],
+	"unlocked_recipes": ["plasma_cutter"],
+	"unlocked_research": [],
+	"active_companions": ["miner_drone"],
+	"persistent_materials": {
+		"ember_ore": 0,
+		"cryo_crystal": 0,
+		"bio_sample": 0,
+		"star_shard": 0
+	},
 	"expeditions_completed": 0
 }
 
@@ -70,7 +79,20 @@ func _restore_backup() -> bool:
 
 func _migrate_save_data(data: Dictionary) -> Dictionary:
 	var version = data.get("save_version", 1)
-	if version < CURRENT_SAVE_VERSION:
-		# Place future version migration logic here (v1 -> v2, etc.)
-		data["save_version"] = CURRENT_SAVE_VERSION
+	if version < 2:
+		# Migrate v1 -> v2
+		data["save_version"] = 2
+		if not data.has("active_origin"):
+			data["active_origin"] = "vanguard"
+		if not data.has("unlocked_research"):
+			data["unlocked_research"] = []
+		if not data.has("persistent_materials"):
+			data["persistent_materials"] = {
+				"ember_ore": 0,
+				"cryo_crystal": 0,
+				"bio_sample": 0,
+				"star_shard": 0
+			}
+		if not data.has("active_companions"):
+			data["active_companions"] = []
 	return data

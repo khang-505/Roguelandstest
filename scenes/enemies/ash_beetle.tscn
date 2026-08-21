@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://c3m7x2w5v8n1k"]
+
+[ext_resource type="Script" path="res://scripts/enemies/ash_beetle.gd" id="1_beetle"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="2_hurtbox"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_beetle"]
+size = Vector2(16, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurtbox"]
+size = Vector2(18, 14)
+
+[node name="AshBeetle" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_beetle")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.9, 0.3, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_beetle")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 16
+script = ExtResource("2_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_hurtbox")

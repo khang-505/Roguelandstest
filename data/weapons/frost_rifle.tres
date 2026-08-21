@@ -1,0 +1,17 @@
+[resource]
+script_class="WeaponData"
+resource_name="Frost Rifle"
+id="frost_rifle"
+display_name="Frost Rifle"
+category=1
+rarity=1
+damage_type=3
+base_damage=15
+attack_speed=2.2
+attack_range=240.0
+critical_chance=0.12
+critical_multiplier=1.4
+knockback_force=60.0
+energy_cost=5.0
+projectile_speed=450.0
+affixes=[]

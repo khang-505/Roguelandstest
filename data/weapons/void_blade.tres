@@ -1,0 +1,17 @@
+[resource]
+script_class="WeaponData"
+resource_name="Void Blade"
+id="void_blade"
+display_name="Void Blade"
+category=0
+rarity=2
+damage_type=5
+base_damage=28
+attack_speed=1.2
+attack_range=36.0
+critical_chance=0.15
+critical_multiplier=1.8
+knockback_force=150.0
+energy_cost=0.0
+projectile_speed=0.0
+affixes=[]

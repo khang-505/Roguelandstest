@@ -1,0 +1,17 @@
+[resource]
+script_class="WeaponData"
+resource_name="Plasma Cutter"
+id="plasma_cutter"
+display_name="Plasma Cutter"
+category=0
+rarity=0
+damage_type=0
+base_damage=18
+attack_speed=1.5
+attack_range=32.0
+critical_chance=0.1
+critical_multiplier=1.5
+knockback_force=120.0
+energy_cost=0.0
+projectile_speed=0.0
+affixes=[]

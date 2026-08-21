@@ -1,15 +1,19 @@
 # Changelog - Starfall Frontier
 
-## [0.2.0] - 2026-08-21
+## [0.2.1] - 2026-08-21
 
 ### Added
-- **Phase 2.0 (Weapon Modifier Engine)**:
-  - Implemented `ModifierGenerator` ([modifier_generator.gd](file:///d:/DULIEU/lamgame/Roguelands/scripts/combat/modifier_generator.gd)) supporting data-driven affix definitions (`damage_mult`, `damage_add`, `crit_chance`, `attack_speed`, `lifesteal`, `knockback`, `proj_speed`).
-  - Added seeded RNG determinism for modifier selection and value rolling.
-  - Implemented category compatibility filtering (preventing ranged-only affixes on melee weapons).
-  - Updated `WeaponData` ([weapon_data.gd](file:///d:/DULIEU/lamgame/Roguelands/scripts/data/weapon_data.gd)) with dynamic stat resolution methods (`get_modified_damage()`, `get_modified_attack_speed()`, `get_modified_critical_chance()`, `get_modified_projectile_speed()`, `get_modified_knockback()`, `get_lifesteal_percent()`).
-  - Added modifier stacking math rules in `docs/BALANCE.md`.
-  - Added automated test suite [test_phase2_0.gd](file:///d:/DULIEU/lamgame/Roguelands/tests/test_phase2_0.gd).
+- **Phase 2.1 (Item Rarity System)**:
+  - Implemented `RarityData` ([rarity_data.gd](file:///d:/DULIEU/lamgame/Roguelands/scripts/data/rarity_data.gd)) with weighted probabilities:
+    - Common: 60.0%
+    - Uncommon: 25.0%
+    - Rare: 10.0%
+    - Epic: 4.0%
+    - Legendary: 0.9%
+    - Mythic: 0.1%
+  - Configured modifier count bounds per tier (Common: 0-1, Uncommon: 1-2, Rare: 2, Epic: 2-3, Legendary: 3-4, Mythic: 4-5).
+  - Added quality stat multipliers (`1.0x` -> `2.5x`) and visual hex color codes (`#A0A0A0` -> `#FF2050`).
+  - Implemented automated 10,000-roll statistical distribution test suite ([test_phase2_1.gd](file:///d:/DULIEU/lamgame/Roguelands/tests/test_phase2_1.gd)).
 
 ### Git Commits
-- `phase-2.0-modifier-engine`
+- `phase-2.1-rarity-system`

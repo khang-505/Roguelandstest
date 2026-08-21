@@ -2,7 +2,7 @@
 class_name RoomGenerator
 extends Node2D
 
-## Deterministic seeded room & platform generator ensuring topological connectivity.
+## Deterministic seeded room & platform generator consuming BiomeData.
 
 @export var room_width: int = 30 # tiles (16px per tile = 480px)
 @export var room_height: int = 17 # tiles (16px per tile = 272px)
@@ -15,12 +15,15 @@ var player_spawn_pos: Vector2 = Vector2.ZERO
 var extraction_pos: Vector2 = Vector2.ZERO
 var enemy_spawn_positions: Array[Vector2] = []
 var loot_spawn_positions: Array[Vector2] = []
+var hazard_positions: Array[Vector2] = []
 
-func generate_room(seed_value: int) -> Dictionary:
+func generate_room(seed_value: int, biome_id: String = "emberwild") -> Dictionary:
+	var biome = BiomeData.get_biome(biome_id)
 	rng.seed = seed_value
 	grid.clear()
 	enemy_spawn_positions.clear()
 	loot_spawn_positions.clear()
+	hazard_positions.clear()
 	
 	# 1. Initialize grid with empty air
 	for y in range(room_height):
@@ -66,21 +69,28 @@ func generate_room(seed_value: int) -> Dictionary:
 		if rng.randf() < 0.4:
 			loot_spawn_positions.append(Vector2((px + 2) * tile_size, (py - 1) * tile_size))
 
-	# 7. Validate connectivity
+	# 7. Seeded environmental hazards placement along floor
+	for hx in range(6, room_width - 6, 3):
+		if rng.randf() < 0.35:
+			grid[room_height - 2][hx] = 2 # HAZARD
+			hazard_positions.append(Vector2(hx * tile_size, (room_height - 2) * tile_size))
+
+	# 8. Validate connectivity
 	var valid = validate_topology()
 	
 	return {
 		"seed": seed_value,
+		"biome": biome,
 		"grid": grid,
 		"player_spawn": player_spawn_pos,
 		"extraction_pos": extraction_pos,
 		"enemy_spawns": enemy_spawn_positions,
 		"loot_spawns": loot_spawn_positions,
+		"hazard_spawns": hazard_positions,
 		"is_valid": valid
 	}
 
 func validate_topology() -> bool:
-	# Flood fill validation from player spawn to extraction beacon
 	var start_tile = Vector2i(int(player_spawn_pos.x / tile_size), int(player_spawn_pos.y / tile_size))
 	var end_tile = Vector2i(int(extraction_pos.x / tile_size), int(extraction_pos.y / tile_size))
 	

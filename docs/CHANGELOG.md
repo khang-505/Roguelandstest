@@ -1,16 +1,14 @@
 # Changelog - Starfall Frontier
 
-## [0.4.0] - 2026-08-21
+## [0.4.1] - 2026-08-21
 
 ### Added
-- **Phase 4.0 (Biome Guardian Boss System & Multi-Phase FSM)**:
-  - Created `BossBase` architecture ([boss_base.gd](file:///d:/DULIEU/lamgame/Roguelands/scripts/bosses/boss_base.gd)) separating behavioral states (`INTRO`, `IDLE`, `COMBAT`, `TRANSITION`, `STUNNED`, `DEAD`) from phase thresholds (`PHASE_1`, `PHASE_2`, `PHASE_3`).
-  - Created Emberwild Biome Guardian *The Molten Warden* ([molten_warden.gd](file:///d:/DULIEU/lamgame/Roguelands/scripts/bosses/molten_warden.gd)):
-    - Phase 1: Heavy melee slams (25 damage).
-    - Phase 2 ($\le 66\%$ HP): Spawns lava pool hazards in arena.
-    - Phase 3 ($\le 33\%$ HP): Enraged attack speed (+50%) and eruption burn burst.
-  - Implemented boss death cleanup freeing hazards, stopping attack timers, and emitting `boss_defeated` event.
-  - Added unit test suite [test_phase4_0.gd](file:///d:/DULIEU/lamgame/Roguelands/tests/test_phase4_0.gd).
+- **Phase 4.1 (Extraction Defense Challenge & Channel Timer)**:
+  - Created `ExtractionBeacon` controller ([extraction_beacon.gd](file:///d:/DULIEU/lamgame/Roguelands/scripts/world/extraction_beacon.gd)) featuring explicit states (`INACTIVE`, `STARTING`, `CHANNELING`, `INTERRUPTED`, `COMPLETED`).
+  - Configured 10-second channeling timer using delta-based elapsed timing.
+  - Implemented defensive wave spawner triggering wave pressure during extraction.
+  - Implemented idempotent reward transfer securing all run loot and currency to the persistent profile upon completion.
+  - Added unit test suite [test_phase4_1.gd](file:///d:/DULIEU/lamgame/Roguelands/tests/test_phase4_1.gd).
 
 ### Git Commits
-- `phase-4.0-boss-system`
+- `phase-4.1-extraction-defense`

@@ -63,7 +63,7 @@ func _process_idle_state(_delta: float) -> void:
 		change_state(State.PATROL)
 		state_timer = randf_range(1.5, 3.0)
 
-func _process_patrol_state(delta: float) -> void:
+func _process_patrol_state(_delta: float) -> void:
 	var speed = enemy_data.move_speed * 0.5 if enemy_data else 30.0
 	velocity.x = patrol_dir * speed
 	if sprite:

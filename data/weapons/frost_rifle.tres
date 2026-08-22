@@ -1,17 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_weapon"]
+
 [resource]
-script_class="WeaponData"
-resource_name="Frost Rifle"
-id="frost_rifle"
-display_name="Frost Rifle"
-category=1
-rarity=1
-damage_type=3
-base_damage=15
-attack_speed=2.2
-attack_range=240.0
-critical_chance=0.12
-critical_multiplier=1.4
-knockback_force=60.0
-energy_cost=5.0
-projectile_speed=450.0
-affixes=[]
+script = ExtResource("1_weapon")
+id = "frost_rifle"
+display_name = "Frost Rifle"
+category = 1
+rarity = 1
+damage_type = 3
+base_damage = 15
+attack_speed = 2.2
+attack_range = 240.0
+critical_chance = 0.12
+critical_multiplier = 1.4
+knockback_force = 60.0
+energy_cost = 5.0
+projectile_speed = 450.0
+affixes = []

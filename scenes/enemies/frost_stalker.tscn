@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://f4x2m7n9v3k2a"]
+[gd_scene format=3 uid="uid://caj615q1cvpbi"]
 
 [ext_resource type="Script" path="res://scripts/enemies/frost_stalker.gd" id="1_frost"]
 [ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="2_hitbox"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://s4x2m7n9v3k5a"]
+[gd_scene format=3 uid="uid://doclay0ana237"]
 
 [ext_resource type="Script" path="res://scripts/enemies/swarm_drone.gd" id="1_swarm"]
 [ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="2_hitbox"]

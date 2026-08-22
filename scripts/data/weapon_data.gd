@@ -124,11 +124,39 @@ static func get_weapon(w_id: String) -> WeaponData:
 	var path = "res://data/weapons/%s.tres" % w_id
 	if ResourceLoader.exists(path):
 		var w = load(path) as WeaponData
-		if w:
+		if w != null:
 			_weapon_cache[w_id] = w
 			return w
+
+	# Fallback weapon construction
 	var fallback = WeaponData.new()
 	fallback.id = w_id
+	match w_id:
+		"frost_rifle":
+			fallback.display_name = "Frost Rifle"
+			fallback.category = WeaponCategory.RANGED
+			fallback.damage_type = DamageType.ICE
+			fallback.base_damage = 15
+			fallback.attack_speed = 2.2
+		"ember_staff":
+			fallback.display_name = "Ember Staff"
+			fallback.category = WeaponCategory.ENERGY
+			fallback.damage_type = DamageType.FIRE
+			fallback.base_damage = 22
+			fallback.attack_speed = 1.2
+		"void_blade":
+			fallback.display_name = "Void Blade"
+			fallback.category = WeaponCategory.MELEE
+			fallback.damage_type = DamageType.VOID
+			fallback.base_damage = 28
+			fallback.attack_speed = 1.8
+		_:
+			fallback.display_name = "Plasma Cutter"
+			fallback.category = WeaponCategory.MELEE
+			fallback.damage_type = DamageType.PHYSICAL
+			fallback.base_damage = 18
+			fallback.attack_speed = 1.5
+
 	_weapon_cache[w_id] = fallback
 	return fallback
 

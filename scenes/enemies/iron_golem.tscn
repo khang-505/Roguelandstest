@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://i4x2m7n9v3k4a"]
+[gd_scene format=3 uid="uid://be5cg3trrotlq"]
 
 [ext_resource type="Script" path="res://scripts/enemies/iron_golem.gd" id="1_iron"]
 [ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="2_hitbox"]

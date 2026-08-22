@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://v4x2m7n9v3k3a"]
+[gd_scene format=3 uid="uid://cswpow20227bg"]
 
 [ext_resource type="Script" path="res://scripts/enemies/void_lurker.gd" id="1_void"]
 [ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="2_hitbox"]

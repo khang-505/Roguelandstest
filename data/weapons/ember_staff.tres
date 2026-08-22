@@ -1,17 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_weapon"]
+
 [resource]
-script_class="WeaponData"
-resource_name="Ember Staff"
-id="ember_staff"
-display_name="Ember Staff"
-category=2
-rarity=2
-damage_type=2
-base_damage=22
-attack_speed=1.1
-attack_range=200.0
-critical_chance=0.20
-critical_multiplier=1.7
-knockback_force=90.0
-energy_cost=10.0
-projectile_speed=320.0
-affixes=[]
+script = ExtResource("1_weapon")
+id = "ember_staff"
+display_name = "Ember Staff"
+category = 2
+rarity = 1
+damage_type = 2
+base_damage = 22
+attack_speed = 1.2
+attack_range = 180.0
+critical_chance = 0.15
+critical_multiplier = 1.6
+knockback_force = 90.0
+energy_cost = 8.0
+projectile_speed = 320.0
+affixes = []

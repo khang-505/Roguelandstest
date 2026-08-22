@@ -4,6 +4,10 @@ extends Node2D
 
 ## Main Expedition Base Hub Controller managing base evolution, stations, and deployment.
 
+const CRAFTING_UI_SCENE = preload("res://scenes/ui/crafting_ui.tscn")
+const RESEARCH_UI_SCENE = preload("res://scenes/ui/research_ui.tscn")
+const ORIGIN_SELECT_UI_SCENE = preload("res://scenes/ui/origin_select_ui.tscn")
+
 const HUB_UPGRADE_COSTS = {
 	2: {"credits": 100, "shards": 10},
 	3: {"credits": 300, "shards": 25},
@@ -59,9 +63,9 @@ func _update_station_locks() -> void:
 	if station_forge:
 		station_forge.required_hub_level = 1
 	if station_research:
-		station_research.required_hub_level = 2
+		station_research.required_hub_level = 1
 	if station_companion:
-		station_companion.required_hub_level = 3
+		station_companion.required_hub_level = 1
 	if station_deploy:
 		station_deploy.required_hub_level = 1
 
@@ -69,11 +73,17 @@ func _on_deployment_interacted(_station_id: String) -> void:
 	GameManager.start_new_expedition()
 
 func _on_forge_interacted(_station_id: String) -> void:
-	# Show basic notification — crafting UI will be expanded later
-	print("[Hub] Forge Station opened — Crafting system available in future update")
+	_open_station_ui(CRAFTING_UI_SCENE)
 
 func _on_research_interacted(_station_id: String) -> void:
-	print("[Hub] Research Lab opened — Research tree available in future update")
+	_open_station_ui(RESEARCH_UI_SCENE)
 
 func _on_companion_interacted(_station_id: String) -> void:
-	print("[Hub] Companion Bay opened — Companion management available in future update")
+	_open_station_ui(ORIGIN_SELECT_UI_SCENE)
+
+func _open_station_ui(scene: PackedScene) -> void:
+	var main_node = get_tree().current_scene
+	if main_node and main_node.has_node("UILayer"):
+		var ui_layer = main_node.get_node("UILayer") as CanvasLayer
+		var ui = scene.instantiate()
+		ui_layer.add_child(ui)

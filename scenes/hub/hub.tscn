@@ -74,11 +74,11 @@ offset_bottom = 0.0
 color = Color(0.9, 0.4, 0.1, 1.0)
 
 [node name="Label" type="Label" parent="Stations/ForgeStation"]
-offset_left = -24.0
+offset_left = -35.0
 offset_top = -24.0
-offset_right = 24.0
+offset_right = 35.0
 offset_bottom = -16.0
-text = "FORGE"
+text = "FORGE [E]"
 horizontal_alignment = 1
 visible = false
 
@@ -89,7 +89,7 @@ collision_mask = 2
 script = ExtResource("2_station")
 station_id = "research"
 display_name = "Research Lab"
-required_hub_level = 2
+required_hub_level = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ResearchStation"]
 shape = SubResource("RectangleShape2D_station")
@@ -102,11 +102,11 @@ offset_bottom = 0.0
 color = Color(0.2, 0.5, 0.9, 1.0)
 
 [node name="Label" type="Label" parent="Stations/ResearchStation"]
-offset_left = -30.0
+offset_left = -40.0
 offset_top = -24.0
-offset_right = 30.0
+offset_right = 40.0
 offset_bottom = -16.0
-text = "RESEARCH"
+text = "RESEARCH [E]"
 horizontal_alignment = 1
 visible = false
 
@@ -116,8 +116,8 @@ collision_layer = 8
 collision_mask = 2
 script = ExtResource("2_station")
 station_id = "companion"
-display_name = "Companion Bay"
-required_hub_level = 3
+display_name = "Origin Bay"
+required_hub_level = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/CompanionStation"]
 shape = SubResource("RectangleShape2D_station")
@@ -130,11 +130,11 @@ offset_bottom = 0.0
 color = Color(0.2, 0.8, 0.4, 1.0)
 
 [node name="Label" type="Label" parent="Stations/CompanionStation"]
-offset_left = -30.0
+offset_left = -35.0
 offset_top = -24.0
-offset_right = 30.0
+offset_right = 35.0
 offset_bottom = -16.0
-text = "COMPANION"
+text = "ORIGIN [E]"
 horizontal_alignment = 1
 visible = false
 
@@ -158,9 +158,9 @@ offset_bottom = 0.0
 color = Color(0.8, 0.2, 0.9, 1.0)
 
 [node name="Label" type="Label" parent="Stations/DeploymentStation"]
-offset_left = -30.0
+offset_left = -35.0
 offset_top = -24.0
-offset_right = 30.0
+offset_right = 35.0
 offset_bottom = -16.0
 text = "DEPLOY [E]"
 horizontal_alignment = 1

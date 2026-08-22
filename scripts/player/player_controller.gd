@@ -194,19 +194,51 @@ func _handle_attack_input() -> void:
 		attack_cooldown_timer = 1.0 / maxf(0.1, speed)
 		_execute_attack()
 
+const PROJECTILE_SCENE = preload("res://scenes/weapons/projectile.tscn")
+
 func _execute_attack() -> void:
+	if current_weapon == null:
+		current_weapon = WeaponData.new()
+
 	# Configure hitbox with modified weapon stats
-	if attack_hitbox and current_weapon:
+	if attack_hitbox:
 		attack_hitbox.damage = current_weapon.get_modified_damage()
 		attack_hitbox.critical_chance = current_weapon.get_modified_critical_chance()
 		attack_hitbox.critical_multiplier = current_weapon.critical_multiplier
 		attack_hitbox.knockback_force = current_weapon.get_modified_knockback()
 		attack_hitbox.damage_type = current_weapon.damage_type
 
-	# Enable hitbox briefly
-	if hitbox_shape:
-		hitbox_shape.disabled = false
-		attack_active_timer = 0.15 # Hitbox active for 150ms
+	# Check category for RANGED / ENERGY vs MELEE
+	if current_weapon.category == WeaponData.WeaponCategory.RANGED or current_weapon.category == WeaponData.WeaponCategory.ENERGY:
+		# Fire Projectile
+		var proj = PROJECTILE_SCENE.instantiate() as Projectile
+		proj.team = Hitbox.Team.PLAYER
+		proj.damage = current_weapon.get_modified_damage()
+		var p_speed = current_weapon.get_modified_projectile_speed()
+		proj.speed = p_speed if p_speed > 0 else 380.0
+		proj.direction = Vector2(facing_direction, 0)
+		proj.damage_type = current_weapon.damage_type
+		proj.global_position = global_position + Vector2(facing_direction * 14, -2)
+		var stage = get_parent()
+		if stage:
+			stage.add_child(proj)
+	else:
+		# Melee attack
+		if hitbox_shape:
+			hitbox_shape.disabled = false
+			attack_active_timer = 0.15 # Hitbox active for 150ms
+
+		# Active Overlap Sweep to guarantee instant hit detection in Godot 4
+		if attack_hitbox:
+			for area in attack_hitbox.get_overlapping_areas():
+				if area is Hurtbox and area.team != Hitbox.Team.PLAYER:
+					var dmg_info = attack_hitbox.get_calculated_damage()
+					area.hit_received.emit(
+						dmg_info["damage"],
+						dmg_info["is_crit"],
+						str(dmg_info["damage_type"]),
+						Vector2(facing_direction, 0) * dmg_info["knockback"]
+					)
 
 	# Visual feedback - brief color change
 	if body_rect:

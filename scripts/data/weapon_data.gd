@@ -159,4 +159,3 @@ static func get_weapon(w_id: String) -> WeaponData:
 
 	_weapon_cache[w_id] = fallback
 	return fallback
-

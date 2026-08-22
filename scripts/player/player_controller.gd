@@ -155,13 +155,19 @@ func _handle_movement(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
 
 func _handle_jump(_delta: float) -> void:
+	# Drop down through one-way platforms when pressing Down (S or Down Arrow)
+	if Input.is_action_just_pressed("move_down") or Input.is_physical_key_pressed(KEY_S) or Input.is_physical_key_pressed(KEY_DOWN):
+		if is_on_floor():
+			position.y += 3.0
+			return
+
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer_timer = jump_buffer_time
 
 	if jump_buffer_timer > 0.0:
 		if is_on_floor() or coyote_timer > 0.0:
 			_execute_jump()
-		elif jumps_left > 1: # Air jump
+		elif jumps_left > 0: # Air jump (Double jump)
 			_execute_jump()
 
 func _execute_jump() -> void:

@@ -171,6 +171,7 @@ func _spawn_platform_node(px: int, py: int, p_width: int) -> void:
 	var rect_shape = RectangleShape2D.new()
 	rect_shape.size = Vector2(p_width * tile_size, 8)
 	shape.shape = rect_shape
+	shape.one_way_collision = true
 	body.add_child(shape)
 
 	var visual = ColorRect.new()

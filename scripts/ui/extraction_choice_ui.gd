@@ -21,11 +21,9 @@ func _on_return_pressed() -> void:
 	GameManager.change_state(GameManager.GameState.RESULTS)
 
 func _on_continue_pressed() -> void:
-	# Save current materials secured so far
+	# 1. Lock in current run materials into persistent profile save so nothing is lost!
 	GameManager.commit_run_rewards_to_save()
-
-	if beacon_ref and is_instance_valid(beacon_ref):
-		if beacon_ref.has_method("reset_beacon"):
-			beacon_ref.reset_beacon()
-
 	queue_free()
+	
+	# 2. Advance depth and generate NEW LARGER MAP!
+	GameManager.continue_expedition_next_stage()

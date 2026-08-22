@@ -60,12 +60,15 @@ func change_state(new_state: GameState) -> void:
 	current_state = new_state
 	EventBus.game_state_changed.emit(old_state, new_state)
 
+var expedition_depth: int = 1
+
 func start_new_expedition(p_seed: int = -1) -> void:
 	if p_seed == -1:
 		current_seed = randi() % 1000000
 	else:
 		current_seed = p_seed
 	
+	expedition_depth = 1
 	var active_origin_id = SaveManager.profile_data.get("active_origin", "vanguard")
 	var origin = OriginData.get_origin(active_origin_id)
 
@@ -85,6 +88,21 @@ func start_new_expedition(p_seed: int = -1) -> void:
 	player_current_hp = player_max_hp
 	player_current_energy = player_max_energy
 	
+	change_state(GameState.WORLD_GENERATION)
+
+func continue_expedition_next_stage() -> void:
+	expedition_depth += 1
+	current_seed = randi() % 1000000
+
+	run_credits = 0
+	run_shards = 0
+	run_materials = {
+		"ember_ore": 0,
+		"cryo_crystal": 0,
+		"bio_sample": 0,
+		"star_shard": 0
+	}
+
 	change_state(GameState.WORLD_GENERATION)
 
 func restart_expedition() -> void:

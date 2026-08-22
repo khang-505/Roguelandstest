@@ -104,12 +104,20 @@ func _build_expedition_world() -> void:
 	world_layer.add_child(current_level)
 
 	var generator = current_level.get_node("RoomGenerator") as RoomGenerator
-	var map_data = generator.generate_room(GameManager.current_seed)
+	var map_data = generator.generate_room(GameManager.current_seed, GameManager.expedition_depth)
 
 	# 2. Instantiate Player at spawn point
 	current_player = PLAYER_SCENE.instantiate() as CharacterBody2D
 	current_player.global_position = map_data["player_spawn"]
 	current_level.add_child(current_player)
+
+	# Set Camera limits according to new dynamic room size
+	if current_player and current_player.has_node("Camera2D"):
+		var cam = current_player.get_node("Camera2D") as Camera2D
+		cam.limit_left = 0
+		cam.limit_top = 0
+		cam.limit_right = map_data.get("room_width_px", 480)
+		cam.limit_bottom = map_data.get("room_height_px", 270)
 
 	# 3. Instantiate diverse enemies
 	var enemies_node = current_level.get_node("EnemiesContainer")

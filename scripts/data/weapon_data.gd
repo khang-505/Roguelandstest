@@ -115,3 +115,20 @@ func get_lifesteal_percent() -> float:
 		if affix.get("stat") == "lifesteal":
 			total += float(affix.get("value", 0.0))
 	return maxf(0.0, total)
+
+static var _weapon_cache: Dictionary = {}
+
+static func get_weapon(w_id: String) -> WeaponData:
+	if _weapon_cache.has(w_id):
+		return _weapon_cache[w_id]
+	var path = "res://data/weapons/%s.tres" % w_id
+	if ResourceLoader.exists(path):
+		var w = load(path) as WeaponData
+		if w:
+			_weapon_cache[w_id] = w
+			return w
+	var fallback = WeaponData.new()
+	fallback.id = w_id
+	_weapon_cache[w_id] = fallback
+	return fallback
+

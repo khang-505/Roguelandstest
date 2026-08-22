@@ -60,6 +60,12 @@ func start_new_expedition(p_seed: int = -1) -> void:
 	else:
 		current_seed = p_seed
 	
+	var active_origin_id = SaveManager.profile_data.get("active_origin", "vanguard")
+	var origin = OriginData.get_origin(active_origin_id)
+
+	player_max_hp = int(100.0 * (1.0 + origin.hp_modifier))
+	player_max_energy = 100.0 * (1.3 if active_origin_id == "mystic" else 1.0)
+
 	run_credits = 0
 	run_shards = 0
 	enemies_killed = 0

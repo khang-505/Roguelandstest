@@ -12,14 +12,23 @@ extends Area2D
 var velocity: Vector2 = Vector2.ZERO
 var is_being_pulled: bool = false
 var target_player: CharacterBody2D = null
-
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+var rarity: RarityData = null
 
 func _ready() -> void:
 	if item_data == null:
 		item_data = ItemData.new()
 		item_data.id = "ember_ore"
 		item_data.display_name = "Ember Ore"
+
+	# Roll Rarity and scale quantity
+	rarity = RarityData.roll_rarity()
+	amount = max(1, int(ceil(float(amount) * rarity.quality_multiplier)))
+
+	# Color visual based on rolled rarity
+	var gem = get_node_or_null("Gem") as ColorRect
+	if gem and rarity:
+		gem.color = Color.html(rarity.color_hex)
+
 	body_entered.connect(_on_body_entered)
 
 func _physics_process(delta: float) -> void:
@@ -40,5 +49,8 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		var id_str = item_data.id if item_data else "ember_ore"
 		var name_str = item_data.display_name if item_data else "Ember Ore"
+		if rarity:
+			name_str = "%s %s" % [rarity.display_name, name_str]
 		EventBus.loot_collected.emit(id_str, name_str, amount)
-		queue_free()
+		if not ObjectPool.release(self):
+			queue_free()

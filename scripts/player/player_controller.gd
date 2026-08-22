@@ -40,6 +40,8 @@ var is_invulnerable: bool = false
 
 # Weapon attack variables
 var current_weapon: WeaponData
+var available_weapons: Array[WeaponData] = []
+var active_weapon_index: int = 0
 var attack_cooldown_timer: float = 0.0
 var attack_active_timer: float = 0.0
 
@@ -56,8 +58,12 @@ func _ready() -> void:
 	max_hp = GameManager.player_max_hp
 	current_energy = GameManager.player_current_energy
 
-	# Load default weapon
-	current_weapon = WeaponData.new()
+	# Load origin and starting weapon
+	var active_origin_id = SaveManager.profile_data.get("active_origin", "vanguard")
+	var origin = OriginData.get_origin(active_origin_id)
+	move_speed = 160.0 * (1.0 + origin.speed_modifier)
+	
+	_setup_weapon_inventory(origin.starting_weapon_id)
 
 	# Connect hurtbox
 	if hurtbox:
@@ -69,6 +75,39 @@ func _ready() -> void:
 
 	EventBus.player_hp_changed.emit(current_hp, max_hp)
 	EventBus.player_energy_changed.emit(current_energy, max_energy)
+
+func _setup_weapon_inventory(starting_weapon_id: String) -> void:
+	available_weapons.clear()
+	var starting_weapon = WeaponData.get_weapon(starting_weapon_id)
+	if starting_weapon:
+		available_weapons.append(starting_weapon)
+		
+	var all_ids = ["plasma_cutter", "frost_rifle", "ember_staff", "void_blade"]
+	for w_id in all_ids:
+		if w_id != starting_weapon_id:
+			var w = WeaponData.get_weapon(w_id)
+			if w:
+				available_weapons.append(w)
+	current_weapon = available_weapons[0]
+
+func switch_weapon(next: bool = true) -> void:
+	if available_weapons.size() <= 1:
+		return
+	if next:
+		active_weapon_index = (active_weapon_index + 1) % available_weapons.size()
+	else:
+		active_weapon_index = (active_weapon_index - 1 + available_weapons.size()) % available_weapons.size()
+	current_weapon = available_weapons[active_weapon_index]
+	
+	var hud_nodes = get_tree().get_nodes_in_group("hud")
+	for h in hud_nodes:
+		if h.has_method("update_hud_display"):
+			h.update_hud_display()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_TAB or event.physical_keycode == KEY_Q:
+			switch_weapon(true)
 
 func _physics_process(delta: float) -> void:
 	if GameManager.current_state == GameManager.GameState.DEATH:
@@ -151,10 +190,19 @@ func _perform_dash(delta: float) -> void:
 
 func _handle_attack_input() -> void:
 	if Input.is_action_just_pressed("attack") and attack_cooldown_timer <= 0.0:
-		attack_cooldown_timer = 1.0 / current_weapon.attack_speed
+		var speed = current_weapon.get_modified_attack_speed() if current_weapon else 1.5
+		attack_cooldown_timer = 1.0 / maxf(0.1, speed)
 		_execute_attack()
 
 func _execute_attack() -> void:
+	# Configure hitbox with modified weapon stats
+	if attack_hitbox and current_weapon:
+		attack_hitbox.damage = current_weapon.get_modified_damage()
+		attack_hitbox.critical_chance = current_weapon.get_modified_critical_chance()
+		attack_hitbox.critical_multiplier = current_weapon.critical_multiplier
+		attack_hitbox.knockback_force = current_weapon.get_modified_knockback()
+		attack_hitbox.damage_type = current_weapon.damage_type
+
 	# Enable hitbox briefly
 	if hitbox_shape:
 		hitbox_shape.disabled = false

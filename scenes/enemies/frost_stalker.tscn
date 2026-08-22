@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://f4x2m7n9v3k2a"]
+
+[ext_resource type="Script" path="res://scripts/enemies/frost_stalker.gd" id="1_frost"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="2_hitbox"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="3_hurtbox"]
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(14, 18)
+
+[node name="FrostStalker" type="CharacterBody2D" groups=["enemy"]]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_frost")
+
+[node name="Body" type="ColorRect" parent="."]
+offset_left = -7.0
+offset_top = -9.0
+offset_right = 7.0
+offset_bottom = 9.0
+color = Color(0.2, 0.8, 0.9, 1.0)
+
+[node name="Eyes" type="ColorRect" parent="."]
+offset_left = 2.0
+offset_top = -7.0
+offset_right = 6.0
+offset_bottom = -4.0
+color = Color(1.0, 1.0, 1.0, 1.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("body_shape")
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 16
+script = ExtResource("2_hitbox")
+team = 1
+damage = 15
+
+[node name="Shape" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("body_shape")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 32
+script = ExtResource("3_hurtbox")
+team = 1
+
+[node name="Shape" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("body_shape")

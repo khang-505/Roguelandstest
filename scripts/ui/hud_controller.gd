@@ -2,13 +2,14 @@
 class_name HUDController
 extends Control
 
-## Controls HUD overlay display for player health, energy, loot count, and active weapon.
+## Controls HUD overlay display for player health, energy, loot count, active weapon, and instability.
 
 @onready var hp_bar: ProgressBar = $MarginContainer/VBoxContainer/HBoxContainer/HPBar if has_node("MarginContainer/VBoxContainer/HBoxContainer/HPBar") else null
 @onready var hp_text: Label = $MarginContainer/VBoxContainer/HBoxContainer/HPText if has_node("MarginContainer/VBoxContainer/HBoxContainer/HPText") else null
 @onready var energy_bar: ProgressBar = $MarginContainer/VBoxContainer/EnergyBar if has_node("MarginContainer/VBoxContainer/EnergyBar") else null
 @onready var credits_label: Label = $MarginContainer/VBoxContainer/CreditsLabel if has_node("MarginContainer/VBoxContainer/CreditsLabel") else null
 @onready var weapon_label: Label = $MarginContainer/VBoxContainer/WeaponLabel if has_node("MarginContainer/VBoxContainer/WeaponLabel") else null
+@onready var instability_label: Label = $TopRight/InstabilityLabel if has_node("TopRight/InstabilityLabel") else null
 
 func _ready() -> void:
 	EventBus.player_hp_changed.connect(_on_hp_changed)
@@ -21,8 +22,17 @@ func update_hud_display() -> void:
 	_on_energy_changed(GameManager.player_current_energy, GameManager.player_max_energy)
 	if credits_label:
 		credits_label.text = "Credits: %d  |  Shards: %d" % [GameManager.run_credits, GameManager.run_shards]
-	if weapon_label:
-		weapon_label.text = "Weapon: Plasma Cutter [Physical]"
+	
+	# Read player weapon name if available
+	var players = get_tree().get_nodes_in_group("player")
+	if players.size() > 0 and players[0].get("current_weapon") != null:
+		var w = players[0].current_weapon as WeaponData
+		if w and weapon_label:
+			weapon_label.text = "Weapon: %s" % w.display_name
+
+func set_instability_display(val: float) -> void:
+	if instability_label:
+		instability_label.text = "Instability: %.1f%%" % val
 
 func _on_hp_changed(current: int, max_val: int) -> void:
 	if hp_bar:

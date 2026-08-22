@@ -17,9 +17,13 @@ var current_ui: Control = null
 var current_level: Node2D = null
 var current_player: CharacterBody2D = null
 
+@onready var world_layer: Node2D = $WorldLayer
+@onready var ui_layer: CanvasLayer = $UILayer
+
 func _ready() -> void:
 	EventBus.game_state_changed.connect(_on_game_state_changed)
 	EventBus.enemy_died.connect(_on_enemy_died)
+	# Trigger initial state
 	_on_game_state_changed(GameManager.GameState.BOOT, GameManager.current_state)
 
 func _on_game_state_changed(_old_state: int, new_state: int) -> void:
@@ -37,54 +41,53 @@ func _on_game_state_changed(_old_state: int, new_state: int) -> void:
 
 func _show_main_menu() -> void:
 	_clear_world()
-	RewardManager.reset_contract()
-	if current_ui:
-		current_ui.queue_free()
+	_clear_ui()
 	current_ui = MAIN_MENU_SCENE.instantiate()
-	add_child(current_ui)
+	ui_layer.add_child(current_ui)
 
 func _show_hub_world() -> void:
 	_clear_world()
-	RewardManager.reset_contract()
-	if current_ui:
-		current_ui.queue_free()
-		
+	_clear_ui()
+
 	current_level = HUB_SCENE.instantiate()
-	add_child(current_level)
-	
+	world_layer.add_child(current_level)
+
 	# Spawn player in Hub
 	current_player = PLAYER_SCENE.instantiate() as CharacterBody2D
 	current_player.global_position = Vector2(50, 230)
 	current_level.add_child(current_player)
 
+	# Show HUD in hub too
+	current_ui = HUD_SCENE.instantiate()
+	ui_layer.add_child(current_ui)
+
 func _build_expedition_world() -> void:
 	_clear_world()
-	if current_ui:
-		current_ui.queue_free()
-		
+	_clear_ui()
+
 	# 1. Instantiate level stage
 	current_level = LEVEL_STAGE_SCENE.instantiate()
-	add_child(current_level)
-	
+	world_layer.add_child(current_level)
+
 	var generator = current_level.get_node("RoomGenerator") as RoomGenerator
 	var map_data = generator.generate_room(GameManager.current_seed)
-	
+
 	# 2. Instantiate Player at spawn point
 	current_player = PLAYER_SCENE.instantiate() as CharacterBody2D
 	current_player.global_position = map_data["player_spawn"]
 	current_level.add_child(current_player)
-	
-	# 3. Instantiate Ash Beetle enemies
+
+	# 3. Instantiate enemies
 	var enemies_node = current_level.get_node("EnemiesContainer")
 	for spawn_pos in map_data["enemy_spawns"]:
 		var beetle = ASH_BEETLE_SCENE.instantiate() as EnemyBase
 		beetle.global_position = spawn_pos
 		enemies_node.add_child(beetle)
-		
-	# 4. Attach HUD overlay
+
+	# 4. Attach HUD overlay via UILayer
 	current_ui = HUD_SCENE.instantiate()
-	add_child(current_ui)
-	
+	ui_layer.add_child(current_ui)
+
 	GameManager.change_state(GameManager.GameState.EXPLORATION)
 
 func _on_enemy_died(pos: Vector2, _type: String) -> void:
@@ -98,10 +101,9 @@ func _on_enemy_died(pos: Vector2, _type: String) -> void:
 			current_level.add_child(loot)
 
 func _show_game_over_screen() -> void:
-	if current_ui:
-		current_ui.queue_free()
+	_clear_ui()
 	current_ui = GAME_OVER_SCENE.instantiate()
-	add_child(current_ui)
+	ui_layer.add_child(current_ui)
 
 func _show_results_screen() -> void:
 	# Calculate final rewards with contract multipliers exactly ONCE
@@ -112,3 +114,9 @@ func _clear_world() -> void:
 	if current_level and is_instance_valid(current_level):
 		current_level.queue_free()
 		current_level = null
+	current_player = null
+
+func _clear_ui() -> void:
+	if current_ui and is_instance_valid(current_ui):
+		current_ui.queue_free()
+		current_ui = null

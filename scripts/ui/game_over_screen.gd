@@ -4,15 +4,22 @@ extends Control
 
 ## Game Over & Expedition Summary Dialog Controller.
 
-@onready var summary_label: Label = $VBoxContainer/SummaryLabel if has_node("VBoxContainer/SummaryLabel") else null
-
 func _ready() -> void:
+	var summary_label = find_child("SummaryLabel", true, false) as Label
+	var restart_btn = find_child("RestartButton", true, false) as Button
+	var menu_btn = find_child("MenuButton", true, false) as Button
+
 	if summary_label:
-		summary_label.text = "Enemies Neutralized: %d\nCredits Acquired: %d\nStar-Shards Harvested: %d" % [
+		summary_label.text = "Enemies: %d\nCredits: %d\nShards: %d" % [
 			GameManager.enemies_killed,
 			GameManager.run_credits,
 			GameManager.run_shards
 		]
+
+	if restart_btn:
+		restart_btn.pressed.connect(_on_restart_pressed)
+	if menu_btn:
+		menu_btn.pressed.connect(_on_menu_pressed)
 
 func _on_restart_pressed() -> void:
 	GameManager.restart_expedition()

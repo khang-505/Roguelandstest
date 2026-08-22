@@ -4,36 +4,46 @@ extends Area2D
 
 ## 10-Second Extraction Channeling Beacon & Defensive Wave Controller.
 
-enum ExtractionState { INACTIVE, STARTING, CHANNELING, INTERRUPTED, COMPLETED }
+enum ExtractionState { INACTIVE, CHANNELING, INTERRUPTED, COMPLETED }
 
 signal extraction_started()
 signal extraction_interrupted()
 signal extraction_completed()
 
 @export var extraction_duration: float = 10.0
-@export var beacon_radius: float = 48.0
 
 var current_state: ExtractionState = ExtractionState.INACTIVE
 var channel_timer: float = 0.0
-var wave_spawn_timer: float = 0.0
 var has_secured_rewards: bool = false
-
 var target_player: CharacterBody2D = null
 
-@onready var label: Label = $Label if has_node("Label") else null
+@onready var beacon_label: Label = $BeaconLabel if has_node("BeaconLabel") else null
 
 func _ready() -> void:
+	# Create collision shape if missing
+	if get_child_count() == 0 or not _has_collision_shape():
+		var shape = CollisionShape2D.new()
+		var rect = RectangleShape2D.new()
+		rect.size = Vector2(24, 24)
+		shape.shape = rect
+		add_child(shape)
+
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+
+func _has_collision_shape() -> bool:
+	for child in get_children():
+		if child is CollisionShape2D:
+			return true
+	return false
 
 func _physics_process(delta: float) -> void:
 	if current_state == ExtractionState.CHANNELING:
 		channel_timer += delta
-		wave_spawn_timer += delta
 
-		if wave_spawn_timer >= 3.0:
-			wave_spawn_timer = 0.0
-			_spawn_defensive_enemy()
+		if beacon_label:
+			var remaining = max(0.0, extraction_duration - channel_timer)
+			beacon_label.text = "EXIT %.1f" % remaining
 
 		if channel_timer >= extraction_duration:
 			_complete_extraction()
@@ -52,7 +62,6 @@ func start_extraction() -> bool:
 
 	current_state = ExtractionState.CHANNELING
 	channel_timer = 0.0
-	wave_spawn_timer = 0.0
 	extraction_started.emit()
 	return true
 
@@ -62,6 +71,8 @@ func interrupt_extraction() -> void:
 
 	current_state = ExtractionState.INTERRUPTED
 	channel_timer = 0.0
+	if beacon_label:
+		beacon_label.text = "EXIT"
 	extraction_interrupted.emit()
 
 func _complete_extraction() -> void:
@@ -75,29 +86,21 @@ func _complete_extraction() -> void:
 
 func _secure_run_rewards() -> void:
 	if has_secured_rewards:
-		return # Idempotent check: prevent duplicate reward transfers
-		
+		return # Idempotent check
+
 	has_secured_rewards = true
-	
+
 	# Transfer run currency to persistent profile
 	var persistent_credits = SaveManager.profile_data.get("total_credits", 0)
 	var persistent_shards = SaveManager.profile_data.get("total_shards", 0)
-	
+
 	SaveManager.profile_data["total_credits"] = persistent_credits + GameManager.run_credits
 	SaveManager.profile_data["total_shards"] = persistent_shards + GameManager.run_shards
-	
+
 	var total_exps = SaveManager.profile_data.get("expeditions_completed", 0)
 	SaveManager.profile_data["expeditions_completed"] = total_exps + 1
-	
-	SaveManager.save_game()
 
-func _spawn_defensive_enemy() -> void:
-	# Spawns defensive wave enemy near beacon
-	var enemy = AshBeetle.new()
-	enemy.global_position = global_position + Vector2(randf_range(-80, 80), -20)
-	var stage = get_tree().current_scene
-	if stage:
-		stage.add_child(enemy)
+	SaveManager.save_game()
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):

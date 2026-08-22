@@ -14,10 +14,10 @@ script = ExtResource("1_hud")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 220.0
-offset_bottom = 90.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 200.0
+offset_bottom = 60.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -26,25 +26,25 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="HPBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(120, 12)
+custom_minimum_size = Vector2(80, 8)
 layout_mode = 2
 value = 100.0
 show_percentage = false
 
 [node name="HPText" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "100 / 100"
+text = "100/100"
 
 [node name="EnergyBar" type="ProgressBar" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(120, 6)
+custom_minimum_size = Vector2(80, 5)
 layout_mode = 2
 value = 100.0
 show_percentage = false
 
 [node name="CreditsLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Credits: 0  |  Shards: 0"
+text = "Credits: 0 | Shards: 0"
 
 [node name="WeaponLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Weapon: Plasma Cutter [Physical]"
+text = "Plasma Cutter"

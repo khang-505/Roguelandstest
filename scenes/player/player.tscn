@@ -1,28 +1,68 @@
-[gd_scene load_steps=3 format=3 uid="uid://b8y7x3w6v1m4a"]
+[gd_scene load_steps=5 format=3 uid="uid://b8y7x3w6v1m4a"]
 
 [ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="2_hitbox"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="3_hurtbox"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
-size = Vector2(14, 26)
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(12, 24)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
-collision_mask = 5
+collision_mask = 1
 script = ExtResource("1_player")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.2, 0.7, 1, 1)
+[node name="Body" type="ColorRect" parent="."]
+offset_left = -6.0
+offset_top = -12.0
+offset_right = 6.0
+offset_bottom = 12.0
+color = Color(0.2, 0.6, 1.0, 1.0)
+
+[node name="Head" type="ColorRect" parent="."]
+offset_left = -4.0
+offset_top = -16.0
+offset_right = 4.0
+offset_bottom = -12.0
+color = Color(0.9, 0.8, 0.6, 1.0)
+
+[node name="Eyes" type="ColorRect" parent="."]
+offset_left = 1.0
+offset_top = -15.0
+offset_right = 3.0
+offset_bottom = -13.0
+color = Color(0.1, 0.1, 0.1, 1.0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 1)
-shape = SubResource("RectangleShape2D_player")
+shape = SubResource("body_shape")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
-drag_left_margin = 0.1
-drag_right_margin = 0.1
-drag_top_margin = 0.1
-drag_bottom_margin = 0.1
+drag_left_margin = 0.15
+drag_right_margin = 0.15
+drag_top_margin = 0.15
+drag_bottom_margin = 0.15
+
+[node name="AttackHitbox" type="Area2D" parent="."]
+position = Vector2(16, 0)
+collision_layer = 16
+collision_mask = 32
+script = ExtResource("2_hitbox")
+team = 0
+damage = 18
+
+[node name="HitboxShape" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("body_shape")
+disabled = true
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 16
+script = ExtResource("3_hurtbox")
+team = 0
+
+[node name="HurtboxShape" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("body_shape")

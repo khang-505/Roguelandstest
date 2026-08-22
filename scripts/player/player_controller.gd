@@ -41,27 +41,43 @@ var is_invulnerable: bool = false
 # Weapon attack variables
 var current_weapon: WeaponData
 var attack_cooldown_timer: float = 0.0
+var attack_active_timer: float = 0.0
 
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
-@onready var hurtbox: Area2D = $Hurtbox if has_node("Hurtbox") else null
+# Hurt flash
+var hurt_flash_timer: float = 0.0
+
+@onready var body_rect: ColorRect = $Body if has_node("Body") else null
+@onready var attack_hitbox: Area2D = $AttackHitbox if has_node("AttackHitbox") else null
+@onready var hitbox_shape: CollisionShape2D = $AttackHitbox/HitboxShape if has_node("AttackHitbox/HitboxShape") else null
+@onready var hurtbox: Hurtbox = $Hurtbox if has_node("Hurtbox") else null
 
 func _ready() -> void:
 	current_hp = GameManager.player_current_hp
 	max_hp = GameManager.player_max_hp
 	current_energy = GameManager.player_current_energy
-	
+
 	# Load default weapon
 	current_weapon = WeaponData.new()
-	
+
+	# Connect hurtbox
+	if hurtbox:
+		hurtbox.hit_received.connect(_on_hit_received)
+
+	# Make sure attack hitbox starts disabled
+	if hitbox_shape:
+		hitbox_shape.disabled = true
+
 	EventBus.player_hp_changed.emit(current_hp, max_hp)
 	EventBus.player_energy_changed.emit(current_energy, max_energy)
 
 func _physics_process(delta: float) -> void:
 	if GameManager.current_state == GameManager.GameState.DEATH:
 		return
-		
+
 	_update_timers(delta)
-	
+	_update_attack_hitbox(delta)
+	_update_hurt_flash(delta)
+
 	if is_dashing:
 		_perform_dash(delta)
 	else:
@@ -79,7 +95,7 @@ func _update_timers(delta: float) -> void:
 		jumps_left = max_jumps
 	else:
 		coyote_timer = maxf(0.0, coyote_timer - delta)
-		
+
 	jump_buffer_timer = maxf(0.0, jump_buffer_timer - delta)
 	dash_cooldown_timer = maxf(0.0, dash_cooldown_timer - delta)
 	attack_cooldown_timer = maxf(0.0, attack_cooldown_timer - delta)
@@ -90,11 +106,11 @@ func _apply_gravity(delta: float) -> void:
 
 func _handle_movement(delta: float) -> void:
 	var move_input = Input.get_axis("move_left", "move_right")
-	
+
 	if move_input != 0.0:
 		facing_direction = 1 if move_input > 0 else -1
-		if sprite:
-			sprite.flip_h = (facing_direction == -1)
+		# Flip player visual
+		scale.x = abs(scale.x) * facing_direction
 		velocity.x = move_toward(velocity.x, move_input * move_speed, acceleration * delta)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
@@ -128,7 +144,7 @@ func _perform_dash(delta: float) -> void:
 	dash_timer -= delta
 	velocity.x = facing_direction * dash_speed
 	velocity.y = 0.0
-	
+
 	if dash_timer <= 0.0:
 		is_dashing = false
 		is_invulnerable = false
@@ -139,23 +155,57 @@ func _handle_attack_input() -> void:
 		_execute_attack()
 
 func _execute_attack() -> void:
-	# Trigger attack hitbox or projectile call
-	var hit_pos = global_position + Vector2(facing_direction * current_weapon.attack_range * 0.5, 0)
-	var is_crit = (randf() < current_weapon.critical_chance)
-	var final_damage = int(current_weapon.base_damage * (current_weapon.critical_multiplier if is_crit else 1.0))
-	
-	EventBus.damage_dealt.emit(hit_pos, final_damage, is_crit, "PHYSICAL")
+	# Enable hitbox briefly
+	if hitbox_shape:
+		hitbox_shape.disabled = false
+		attack_active_timer = 0.15 # Hitbox active for 150ms
+
+	# Visual feedback - brief color change
+	if body_rect:
+		body_rect.color = Color(1.0, 1.0, 1.0, 1.0)
+		await get_tree().create_timer(0.1).timeout
+		if is_instance_valid(body_rect):
+			body_rect.color = Color(0.2, 0.6, 1.0, 1.0)
+
+func _update_attack_hitbox(delta: float) -> void:
+	if attack_active_timer > 0.0:
+		attack_active_timer -= delta
+		if attack_active_timer <= 0.0 and hitbox_shape:
+			hitbox_shape.disabled = true
+
+func _update_hurt_flash(delta: float) -> void:
+	if hurt_flash_timer > 0.0:
+		hurt_flash_timer -= delta
+		if body_rect:
+			# Flash red/normal
+			if int(hurt_flash_timer * 20) % 2 == 0:
+				body_rect.color = Color(1.0, 0.2, 0.2, 1.0)
+			else:
+				body_rect.color = Color(0.2, 0.6, 1.0, 1.0)
+		if hurt_flash_timer <= 0.0 and body_rect:
+			body_rect.color = Color(0.2, 0.6, 1.0, 1.0)
+
+func _on_hit_received(damage: int, _is_crit: bool, _damage_type: String, knockback_vector: Vector2) -> void:
+	if is_invulnerable or current_hp <= 0:
+		return
+	take_damage(damage, knockback_vector)
 
 func take_damage(amount: int, knockback_dir: Vector2 = Vector2.ZERO) -> void:
 	if is_invulnerable or current_hp <= 0:
 		return
-		
+
 	current_hp = max(0, current_hp - amount)
 	GameManager.player_current_hp = current_hp
 	EventBus.player_hp_changed.emit(current_hp, max_hp)
-	
+
+	# Hurt flash
+	hurt_flash_timer = 0.3
+	is_invulnerable = true
+	await get_tree().create_timer(0.4).timeout
+	is_invulnerable = false
+
 	if knockback_dir != Vector2.ZERO:
-		velocity += knockback_dir * 180.0
-		
+		velocity += knockback_dir
+
 	if current_hp <= 0:
 		EventBus.player_died.emit()

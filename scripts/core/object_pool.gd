@@ -4,12 +4,12 @@ extends Node
 
 ## High-performance pre-allocated object memory pool to maintain a stable 60 FPS target.
 
-static var pools: Dictionary = {} # scene_path -> Array[Node2D] (inactive)
+static var pools: Dictionary = {} # scene_path -> Array (inactive)
 static var active_objects: Dictionary = {} # instance_id -> scene_path
 static var max_pool_size: int = 100
 
 static func acquire(scene: PackedScene, parent: Node) -> Node2D:
-	if scene == null or parent == null:
+	if scene == null or parent == null or not is_instance_valid(parent):
 		return null
 
 	var scene_path = scene.resource_path
@@ -20,19 +20,25 @@ static func acquire(scene: PackedScene, parent: Node) -> Node2D:
 	var obj: Node2D = null
 
 	while inactive_list.size() > 0:
-		var candidate = inactive_list.pop_back() as Node2D
-		if is_instance_valid(candidate):
-			obj = candidate
-			break
+		var candidate = inactive_list.pop_back()
+		if candidate != null and is_instance_valid(candidate):
+			var n = candidate as Node2D
+			if n != null and not n.is_queued_for_deletion():
+				obj = n
+				break
 
 	if obj == null:
 		obj = scene.instantiate() as Node2D
+		if obj == null:
+			return null
 		parent.add_child(obj)
 	else:
-		if obj.get_parent() != parent:
-			if obj.get_parent():
-				obj.get_parent().remove_child(obj)
-			parent.add_child(obj)
+		if is_instance_valid(obj):
+			var cur_parent = obj.get_parent()
+			if cur_parent != parent:
+				if cur_parent != null:
+					cur_parent.remove_child(obj)
+				parent.add_child(obj)
 
 	active_objects[obj.get_instance_id()] = scene_path
 	obj.visible = true
@@ -66,6 +72,10 @@ static func release(obj: Node2D) -> bool:
 		obj.queue_free() # Exceeding max pool cap safely frees object
 
 	return true
+
+static func clear_all() -> void:
+	pools.clear()
+	active_objects.clear()
 
 static func get_active_count() -> int:
 	return active_objects.size()

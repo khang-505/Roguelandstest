@@ -2,7 +2,7 @@
 class_name ExtractionBeacon
 extends Area2D
 
-## 10-Second Extraction Channeling Beacon & Defensive Wave Controller.
+## 5-Second Extraction Channeling Beacon & Decision Choice Controller.
 
 enum ExtractionState { INACTIVE, CHANNELING, INTERRUPTED, COMPLETED }
 
@@ -10,17 +10,17 @@ signal extraction_started()
 signal extraction_interrupted()
 signal extraction_completed()
 
-@export var extraction_duration: float = 10.0
+const EXTRACTION_CHOICE_SCENE = preload("res://scenes/ui/extraction_choice_ui.tscn")
+
+@export var extraction_duration: float = 5.0
 
 var current_state: ExtractionState = ExtractionState.INACTIVE
 var channel_timer: float = 0.0
-var has_secured_rewards: bool = false
 var target_player: CharacterBody2D = null
 
 @onready var beacon_label: Label = $BeaconLabel if has_node("BeaconLabel") else null
 
 func _ready() -> void:
-	# Create collision shape if missing
 	if get_child_count() == 0 or not _has_collision_shape():
 		var shape = CollisionShape2D.new()
 		var rect = RectangleShape2D.new()
@@ -81,26 +81,22 @@ func _complete_extraction() -> void:
 
 	current_state = ExtractionState.COMPLETED
 	extraction_completed.emit()
-	_secure_run_rewards()
-	GameManager.change_state(GameManager.GameState.RESULTS)
+	if beacon_label:
+		beacon_label.text = "READY!"
 
-func _secure_run_rewards() -> void:
-	if has_secured_rewards:
-		return # Idempotent check
+	# Instantiate Choice UI on CanvasLayer
+	var main_node = get_tree().current_scene
+	if main_node and main_node.has_node("UILayer"):
+		var ui_layer = main_node.get_node("UILayer") as CanvasLayer
+		var choice_ui = EXTRACTION_CHOICE_SCENE.instantiate() as ExtractionChoiceUIController
+		choice_ui.beacon_ref = self
+		ui_layer.add_child(choice_ui)
 
-	has_secured_rewards = true
-
-	# Transfer run currency to persistent profile
-	var persistent_credits = SaveManager.profile_data.get("total_credits", 0)
-	var persistent_shards = SaveManager.profile_data.get("total_shards", 0)
-
-	SaveManager.profile_data["total_credits"] = persistent_credits + GameManager.run_credits
-	SaveManager.profile_data["total_shards"] = persistent_shards + GameManager.run_shards
-
-	var total_exps = SaveManager.profile_data.get("expeditions_completed", 0)
-	SaveManager.profile_data["expeditions_completed"] = total_exps + 1
-
-	SaveManager.save_game()
+func reset_beacon() -> void:
+	current_state = ExtractionState.INACTIVE
+	channel_timer = 0.0
+	if beacon_label:
+		beacon_label.text = "EXIT"
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):

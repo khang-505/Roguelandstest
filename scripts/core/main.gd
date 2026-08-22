@@ -136,13 +136,17 @@ func _build_expedition_world() -> void:
 
 	GameManager.change_state(GameManager.GameState.EXPLORATION)
 
-func _on_enemy_died(pos: Vector2, _type: String) -> void:
+func _on_enemy_died(pos: Vector2, enemy_type: String) -> void:
+	call_deferred("_spawn_enemy_loot_drop", pos, enemy_type)
+
+func _spawn_enemy_loot_drop(pos: Vector2, enemy_type: String) -> void:
 	if current_level and is_instance_valid(current_level):
 		var loot_container = current_level.get_node_or_null("LootContainer")
 		var target_parent = loot_container if loot_container else current_level
-		var loot = ObjectPool.acquire(LOOT_DROP_SCENE, target_parent)
+		var loot = ObjectPool.acquire(LOOT_DROP_SCENE, target_parent) as LootDrop
 		if loot:
 			loot.global_position = pos
+			loot.configure_enemy_drop(enemy_type)
 
 func _on_damage_dealt(pos: Vector2, damage: int, is_crit: bool, type_str: String) -> void:
 	if current_level and is_instance_valid(current_level):
@@ -159,6 +163,7 @@ func _show_results_screen() -> void:
 	_show_game_over_screen()
 
 func _clear_world() -> void:
+	ObjectPool.clear_all()
 	if active_inventory_ui and is_instance_valid(active_inventory_ui):
 		active_inventory_ui.queue_free()
 		active_inventory_ui = null

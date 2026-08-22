@@ -26,6 +26,12 @@ enum GameState {
 var current_seed: int = 1337
 var run_credits: int = 0
 var run_shards: int = 0
+var run_materials: Dictionary = {
+	"ember_ore": 0,
+	"cryo_crystal": 0,
+	"bio_sample": 0,
+	"star_shard": 0
+}
 var enemies_killed: int = 0
 var run_time_seconds: float = 0.0
 var current_biome_name: String = "Emberwild Frontier"
@@ -68,6 +74,12 @@ func start_new_expedition(p_seed: int = -1) -> void:
 
 	run_credits = 0
 	run_shards = 0
+	run_materials = {
+		"ember_ore": 0,
+		"cryo_crystal": 0,
+		"bio_sample": 0,
+		"star_shard": 0
+	}
 	enemies_killed = 0
 	run_time_seconds = 0.0
 	player_current_hp = player_max_hp
@@ -78,12 +90,36 @@ func start_new_expedition(p_seed: int = -1) -> void:
 func restart_expedition() -> void:
 	start_new_expedition(current_seed + 1)
 
+func commit_run_rewards_to_save() -> void:
+	var profile = SaveManager.profile_data
+	profile["total_credits"] = profile.get("total_credits", 0) + run_credits
+	profile["total_shards"] = profile.get("total_shards", 0) + run_shards
+
+	var persistent_mats = profile.get("persistent_materials", {})
+	if not typeof(persistent_mats) == TYPE_DICTIONARY:
+		persistent_mats = {}
+
+	for mat in run_materials.keys():
+		persistent_mats[mat] = persistent_mats.get(mat, 0) + run_materials[mat]
+	profile["persistent_materials"] = persistent_mats
+
+	var total_exps = profile.get("expeditions_completed", 0)
+	profile["expeditions_completed"] = total_exps + 1
+	SaveManager.save_game()
+
 func _on_player_died() -> void:
 	change_state(GameState.DEATH)
 
-func _on_loot_collected(_item_id: String, _item_name: String, amount: int) -> void:
-	run_credits += amount * 10
-	run_shards += amount
+func _on_loot_collected(item_id: String, _item_name: String, amount: int) -> void:
+	if item_id == "credit":
+		run_credits += amount * 10
+	elif item_id == "star_shard":
+		run_shards += amount
+		run_materials["star_shard"] = run_materials.get("star_shard", 0) + amount
+	elif run_materials.has(item_id):
+		run_materials[item_id] += amount
+	else:
+		run_credits += amount * 10
 
 func _on_enemy_died(_pos: Vector2, _type: String) -> void:
 	enemies_killed += 1

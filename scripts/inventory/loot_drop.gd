@@ -13,23 +13,50 @@ var velocity: Vector2 = Vector2.ZERO
 var is_being_pulled: bool = false
 var target_player: CharacterBody2D = null
 var rarity: RarityData = null
+var item_id: String = "ember_ore"
+
+const MATERIAL_COLORS = {
+	"ember_ore": Color(1.0, 0.4, 0.1, 1.0),
+	"cryo_crystal": Color(0.2, 0.8, 1.0, 1.0),
+	"bio_sample": Color(0.2, 0.9, 0.3, 1.0),
+	"star_shard": Color(0.8, 0.2, 1.0, 1.0),
+	"credit": Color(1.0, 0.85, 0.2, 1.0)
+}
 
 func _ready() -> void:
 	if item_data == null:
 		item_data = ItemData.new()
 		item_data.id = "ember_ore"
 		item_data.display_name = "Ember Ore"
-
-	# Roll Rarity and scale quantity
-	rarity = RarityData.roll_rarity()
-	amount = max(1, int(ceil(float(amount) * rarity.quality_multiplier)))
-
-	# Color visual based on rolled rarity
-	var gem = get_node_or_null("Gem") as ColorRect
-	if gem and rarity:
-		gem.color = Color.html(rarity.color_hex)
-
 	body_entered.connect(_on_body_entered)
+
+func configure_enemy_drop(enemy_type: String) -> void:
+	rarity = RarityData.roll_rarity()
+	amount = max(1, int(ceil(1.0 * rarity.quality_multiplier)))
+	
+	var drop_pool = ["credit", "ember_ore"]
+	match enemy_type:
+		"frost_stalker":
+			drop_pool = ["cryo_crystal", "credit", "star_shard"]
+		"void_lurker":
+			drop_pool = ["bio_sample", "star_shard", "credit"]
+		"iron_golem":
+			drop_pool = ["ember_ore", "star_shard", "cryo_crystal"]
+		"swarm_drone":
+			drop_pool = ["credit", "ember_ore"]
+		_:
+			drop_pool = ["ember_ore", "credit", "bio_sample"]
+
+	item_id = drop_pool[randi() % drop_pool.size()]
+	item_data.id = item_id
+	item_data.display_name = item_id.replace("_", " ").capitalize()
+
+	var gem = get_node_or_null("Gem") as ColorRect
+	if gem:
+		if MATERIAL_COLORS.has(item_id):
+			gem.color = MATERIAL_COLORS[item_id]
+		elif rarity:
+			gem.color = Color.html(rarity.color_hex)
 
 func _physics_process(delta: float) -> void:
 	if target_player == null:
@@ -47,8 +74,8 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
-		var id_str = item_data.id if item_data else "ember_ore"
-		var name_str = item_data.display_name if item_data else "Ember Ore"
+		var id_str = item_data.id if item_data else item_id
+		var name_str = item_data.display_name if item_data else "Material"
 		if rarity:
 			name_str = "%s %s" % [rarity.display_name, name_str]
 		EventBus.loot_collected.emit(id_str, name_str, amount)

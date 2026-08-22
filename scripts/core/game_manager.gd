@@ -75,11 +75,9 @@ func restart_expedition() -> void:
 func _on_player_died() -> void:
 	change_state(GameState.DEATH)
 
-func _on_loot_collected(item_id: String, _item_name: String, amount: int) -> void:
-	if item_id == "credit" or item_id == "ember_ore":
-		run_credits += amount * 10
-	elif item_id == "star_shard" or item_id == "ancient_fragment":
-		run_shards += amount
+func _on_loot_collected(_item_id: String, _item_name: String, amount: int) -> void:
+	run_credits += amount * 10
+	run_shards += amount
 
 func _on_enemy_died(_pos: Vector2, _type: String) -> void:
 	enemies_killed += 1

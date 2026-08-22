@@ -12,7 +12,7 @@ size = Vector2(32, 32)
 [node name="Hub" type="Node2D"]
 script = ExtResource("1_hub")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="BG" type="ColorRect" parent="."]
 offset_right = 480.0
 offset_bottom = 270.0
 color = Color(0.06, 0.08, 0.12, 1)
@@ -27,8 +27,15 @@ collision_mask = 6
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticPlatforms/GroundPlatform"]
 shape = SubResource("RectangleShape2D_ground")
 
+[node name="GroundVisual" type="ColorRect" parent="StaticPlatforms/GroundPlatform"]
+offset_left = -240.0
+offset_top = -8.0
+offset_right = 240.0
+offset_bottom = 8.0
+color = Color(0.2, 0.25, 0.3, 1.0)
+
 [node name="LeftWall" type="StaticBody2D" parent="StaticPlatforms"]
-position = Vector2(8, 135)
+position = Vector2(-4, 135)
 collision_layer = 1
 collision_mask = 6
 
@@ -37,7 +44,7 @@ rotation = 1.5708
 shape = SubResource("RectangleShape2D_ground")
 
 [node name="RightWall" type="StaticBody2D" parent="StaticPlatforms"]
-position = Vector2(472, 135)
+position = Vector2(484, 135)
 collision_layer = 1
 collision_mask = 6
 
@@ -59,6 +66,22 @@ required_hub_level = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ForgeStation"]
 shape = SubResource("RectangleShape2D_station")
 
+[node name="Visual" type="ColorRect" parent="Stations/ForgeStation"]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 0.0
+color = Color(0.9, 0.4, 0.1, 1.0)
+
+[node name="Label" type="Label" parent="Stations/ForgeStation"]
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = -16.0
+text = "FORGE"
+horizontal_alignment = 1
+visible = false
+
 [node name="ResearchStation" type="Area2D" parent="Stations"]
 position = Vector2(180, 240)
 collision_layer = 8
@@ -70,6 +93,22 @@ required_hub_level = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ResearchStation"]
 shape = SubResource("RectangleShape2D_station")
+
+[node name="Visual" type="ColorRect" parent="Stations/ResearchStation"]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 0.0
+color = Color(0.2, 0.5, 0.9, 1.0)
+
+[node name="Label" type="Label" parent="Stations/ResearchStation"]
+offset_left = -30.0
+offset_top = -24.0
+offset_right = 30.0
+offset_bottom = -16.0
+text = "RESEARCH"
+horizontal_alignment = 1
+visible = false
 
 [node name="CompanionStation" type="Area2D" parent="Stations"]
 position = Vector2(280, 240)
@@ -83,6 +122,22 @@ required_hub_level = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/CompanionStation"]
 shape = SubResource("RectangleShape2D_station")
 
+[node name="Visual" type="ColorRect" parent="Stations/CompanionStation"]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 0.0
+color = Color(0.2, 0.8, 0.4, 1.0)
+
+[node name="Label" type="Label" parent="Stations/CompanionStation"]
+offset_left = -30.0
+offset_top = -24.0
+offset_right = 30.0
+offset_bottom = -16.0
+text = "COMPANION"
+horizontal_alignment = 1
+visible = false
+
 [node name="DeploymentStation" type="Area2D" parent="Stations"]
 position = Vector2(400, 240)
 collision_layer = 8
@@ -95,16 +150,35 @@ required_hub_level = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/DeploymentStation"]
 shape = SubResource("RectangleShape2D_station")
 
-[node name="UI" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 480.0
-offset_bottom = 270.0
+[node name="Visual" type="ColorRect" parent="Stations/DeploymentStation"]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 0.0
+color = Color(0.8, 0.2, 0.9, 1.0)
+
+[node name="Label" type="Label" parent="Stations/DeploymentStation"]
+offset_left = -30.0
+offset_top = -24.0
+offset_right = 30.0
+offset_bottom = -16.0
+text = "DEPLOY [E]"
+horizontal_alignment = 1
+visible = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="HubTitle" type="Label" parent="UI"]
-layout_mode = 0
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 240.0
-offset_bottom = 39.0
+offset_left = 8.0
+offset_top = 4.0
+offset_right = 250.0
+offset_bottom = 18.0
 text = "STARFALL FRONTIER - EXPEDITION BASE"
+
+[node name="Controls" type="Label" parent="UI"]
+offset_left = 8.0
+offset_top = 18.0
+offset_right = 250.0
+offset_bottom = 32.0
+text = "A/D Move | SPACE Jump | E Interact"

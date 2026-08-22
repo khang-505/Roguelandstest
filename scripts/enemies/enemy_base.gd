@@ -15,9 +15,10 @@ var max_hp: int = 45
 var target_player: CharacterBody2D = null
 var patrol_dir: int = 1
 var state_timer: float = 0.0
+var hurt_flash_timer: float = 0.0
 
 @onready var hurtbox: Hurtbox = $Hurtbox if has_node("Hurtbox") else null
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+@onready var body_rect: ColorRect = $Body if has_node("Body") else null
 
 func _ready() -> void:
 	if enemy_data:
@@ -30,9 +31,10 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if current_state == State.DEAD:
 		return
-		
+
 	state_timer -= delta
-	
+	_update_hurt_flash(delta)
+
 	match current_state:
 		State.IDLE:
 			_process_idle_state(delta)
@@ -66,9 +68,7 @@ func _process_idle_state(_delta: float) -> void:
 func _process_patrol_state(_delta: float) -> void:
 	var speed = enemy_data.move_speed * 0.5 if enemy_data else 30.0
 	velocity.x = patrol_dir * speed
-	if sprite:
-		sprite.flip_h = (patrol_dir == -1)
-		
+
 	_look_for_player()
 	if is_on_wall() or state_timer <= 0.0:
 		patrol_dir *= -1
@@ -79,11 +79,11 @@ func _process_chase_state(_delta: float) -> void:
 	if not target_player or not is_instance_valid(target_player):
 		change_state(State.IDLE)
 		return
-		
+
 	var dist = global_position.distance_to(target_player.global_position)
 	var attack_r = enemy_data.attack_range if enemy_data else 24.0
 	var detect_r = enemy_data.detection_radius if enemy_data else 140.0
-	
+
 	if dist <= attack_r:
 		change_state(State.ATTACK)
 	elif dist > detect_r * 1.5:
@@ -93,19 +93,20 @@ func _process_chase_state(_delta: float) -> void:
 		var dir = signf(target_player.global_position.x - global_position.x)
 		var speed = enemy_data.move_speed if enemy_data else 65.0
 		velocity.x = dir * speed
-		if sprite and dir != 0.0:
-			sprite.flip_h = (dir == -1)
+		# Face direction
+		scale.x = abs(scale.x) * (1 if dir >= 0 else -1)
 
 func _process_attack_state(_delta: float) -> void:
 	velocity.x = 0.0
 	if state_timer <= 0.0:
-		# Attack impulse
+		# Attack impulse — use direct damage for now
 		if target_player and is_instance_valid(target_player):
 			var dist = global_position.distance_to(target_player.global_position)
 			if dist <= (enemy_data.attack_range * 1.2 if enemy_data else 30.0):
 				if target_player.has_method("take_damage"):
 					var dmg = enemy_data.touch_damage if enemy_data else 12
-					target_player.take_damage(dmg)
+					var kb = (target_player.global_position - global_position).normalized() * 120.0
+					target_player.take_damage(dmg, kb)
 		var cd = enemy_data.attack_cooldown if enemy_data else 1.2
 		state_timer = cd
 		change_state(State.CHASE)
@@ -129,9 +130,18 @@ func _on_hit_received(damage: int, _is_crit: bool, _damage_type: String, knockba
 	velocity += knockback_vector
 	change_state(State.STUNNED)
 	state_timer = 0.15
-	
+	hurt_flash_timer = 0.2
+
 	if current_hp <= 0:
 		_die()
+
+func _update_hurt_flash(delta: float) -> void:
+	if hurt_flash_timer > 0.0:
+		hurt_flash_timer -= delta
+		if body_rect:
+			body_rect.color = Color(1.0, 1.0, 1.0, 1.0)
+		if hurt_flash_timer <= 0.0 and body_rect:
+			body_rect.color = Color(0.8, 0.3, 0.1, 1.0)
 
 func _die() -> void:
 	change_state(State.DEAD)

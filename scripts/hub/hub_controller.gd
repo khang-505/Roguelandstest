@@ -20,7 +20,7 @@ var current_hub_level: int = 1
 func _ready() -> void:
 	current_hub_level = SaveManager.profile_data.get("hub_level", 1)
 	_update_station_locks()
-	
+
 	if station_deploy:
 		station_deploy.player_interacted.connect(_on_deployment_interacted)
 	if station_forge:
@@ -33,24 +33,24 @@ func _ready() -> void:
 func upgrade_hub() -> bool:
 	if current_hub_level >= 4:
 		return false # Max level reached
-		
+
 	var next_level = current_hub_level + 1
 	var cost = HUB_UPGRADE_COSTS.get(next_level, {})
 	var req_credits = cost.get("credits", 99999)
 	var req_shards = cost.get("shards", 99999)
-	
+
 	var total_credits = SaveManager.profile_data.get("total_credits", 0)
 	var total_shards = SaveManager.profile_data.get("total_shards", 0)
-	
+
 	if total_credits < req_credits or total_shards < req_shards:
 		return false # Insufficient funds
-		
+
 	# Atomic transaction
 	SaveManager.profile_data["total_credits"] = total_credits - req_credits
 	SaveManager.profile_data["total_shards"] = total_shards - req_shards
 	SaveManager.profile_data["hub_level"] = next_level
 	current_hub_level = next_level
-	
+
 	SaveManager.save_game()
 	_update_station_locks()
 	return true
@@ -69,10 +69,11 @@ func _on_deployment_interacted(_station_id: String) -> void:
 	GameManager.start_new_expedition()
 
 func _on_forge_interacted(_station_id: String) -> void:
-	pass # Opens Crafting UI in Phase 3.1
+	# Show basic notification — crafting UI will be expanded later
+	print("[Hub] Forge Station opened — Crafting system available in future update")
 
 func _on_research_interacted(_station_id: String) -> void:
-	pass # Opens Research UI in Phase 3.2
+	print("[Hub] Research Lab opened — Research tree available in future update")
 
 func _on_companion_interacted(_station_id: String) -> void:
-	pass # Opens Companion UI in Phase 3.3
+	print("[Hub] Companion Bay opened — Companion management available in future update")

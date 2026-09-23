@@ -32,7 +32,7 @@ static func _setup_registry() -> void:
 	v.description = "Frontline specialist with +20% HP and +15% Physical Strike."
 	v.hp_modifier = 0.20
 	v.damage_modifier = 0.15
-	v.starting_weapon_id = "plasma_cutter"
+	v.starting_weapon_id = "frost_rifle"
 	origin_registry["vanguard"] = v
 
 	# 2. Scout

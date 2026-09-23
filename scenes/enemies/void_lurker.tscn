@@ -3,28 +3,18 @@
 [ext_resource type="Script" path="res://scripts/enemies/void_lurker.gd" id="1_void"]
 [ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="2_hitbox"]
 [ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Texture2D" path="res://art/enemies/void_lurker.png" id="4_tex"]
 
 [sub_resource type="RectangleShape2D" id="body_shape"]
 size = Vector2(12, 12)
 
-[node name="VoidLurker" type="CharacterBody2D" groups=["enemy"]]
+[node name="VoidLurker" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
 collision_mask = 1
 script = ExtResource("1_void")
 
-[node name="Body" type="ColorRect" parent="."]
-offset_left = -6.0
-offset_top = -6.0
-offset_right = 6.0
-offset_bottom = 6.0
-color = Color(0.6, 0.2, 0.9, 1.0)
-
-[node name="Eyes" type="ColorRect" parent="."]
-offset_left = 2.0
-offset_top = -5.0
-offset_right = 5.0
-offset_bottom = -2.0
-color = Color(1.0, 0.2, 0.5, 1.0)
+[node name="Visual" type="Sprite2D" parent="."]
+texture = ExtResource("4_tex")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("body_shape")

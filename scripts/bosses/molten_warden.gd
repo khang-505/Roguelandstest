@@ -41,8 +41,14 @@ func _execute_boss_attack() -> void:
 func _spawn_lava_hazards() -> void:
 	# Spawns maximum 3 lava pool hazards in arena
 	for i in range(3):
-		var hazard = Node2D.new()
+		var hazard: Node2D
+		if lava_hazard_scene:
+			hazard = lava_hazard_scene.instantiate() as Node2D
+		else:
+			hazard = Node2D.new()
 		hazard.position = global_position + Vector2((i - 1) * 60, 0)
+		if get_parent():
+			get_parent().add_child(hazard)
 		active_lava_hazards.append(hazard)
 
 func _trigger_arena_eruption() -> void:

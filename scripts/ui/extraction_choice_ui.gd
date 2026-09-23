@@ -16,13 +16,13 @@ func _ready() -> void:
 		continue_btn.pressed.connect(_on_continue_pressed)
 
 func _on_return_pressed() -> void:
-	GameManager.commit_run_rewards_to_save()
+	GameManager.transfer_backpack_to_stash()
 	queue_free()
-	GameManager.change_state(GameManager.GameState.RESULTS)
+	GameManager.change_state(GameManager.GameState.HUB)
 
 func _on_continue_pressed() -> void:
-	# 1. Lock in current run materials into persistent profile save so nothing is lost!
-	GameManager.commit_run_rewards_to_save()
+	# 1. DO NOT commit rewards to save here! Items stay in the backpack.
+	# If the player dies in the next zone, they lose them (True Risk vs Reward!)
 	queue_free()
 	
 	# 2. Advance depth and generate NEW LARGER MAP!

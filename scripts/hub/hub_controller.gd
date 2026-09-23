@@ -7,6 +7,7 @@ extends Node2D
 const CRAFTING_UI_SCENE = preload("res://scenes/ui/crafting_ui.tscn")
 const RESEARCH_UI_SCENE = preload("res://scenes/ui/research_ui.tscn")
 const ORIGIN_SELECT_UI_SCENE = preload("res://scenes/ui/origin_select_ui.tscn")
+const SHOP_UI_SCENE = preload("res://scenes/ui/shop_ui.tscn")
 
 const HUB_UPGRADE_COSTS = {
 	2: {"credits": 100, "shards": 10},
@@ -19,6 +20,7 @@ var current_hub_level: int = 1
 @onready var station_forge: StationBase = $Stations/ForgeStation if has_node("Stations/ForgeStation") else null
 @onready var station_research: StationBase = $Stations/ResearchStation if has_node("Stations/ResearchStation") else null
 @onready var station_companion: StationBase = $Stations/CompanionStation if has_node("Stations/CompanionStation") else null
+@onready var station_shop: StationBase = $Stations/ShopStation if has_node("Stations/ShopStation") else null
 @onready var station_deploy: StationBase = $Stations/DeploymentStation if has_node("Stations/DeploymentStation") else null
 
 func _ready() -> void:
@@ -33,6 +35,8 @@ func _ready() -> void:
 		station_research.player_interacted.connect(_on_research_interacted)
 	if station_companion:
 		station_companion.player_interacted.connect(_on_companion_interacted)
+	if station_shop:
+		station_shop.player_interacted.connect(_on_shop_interacted)
 
 func upgrade_hub() -> bool:
 	if current_hub_level >= 4:
@@ -80,6 +84,9 @@ func _on_research_interacted(_station_id: String) -> void:
 
 func _on_companion_interacted(_station_id: String) -> void:
 	_open_station_ui(ORIGIN_SELECT_UI_SCENE)
+
+func _on_shop_interacted(_station_id: String) -> void:
+	_open_station_ui(SHOP_UI_SCENE)
 
 func _open_station_ui(scene: PackedScene) -> void:
 	var main_node = get_tree().current_scene

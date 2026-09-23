@@ -138,6 +138,34 @@ text = "ORIGIN [E]"
 horizontal_alignment = 1
 visible = false
 
+[node name="ShopStation" type="Area2D" parent="Stations"]
+position = Vector2(340, 240)
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("2_station")
+station_id = "shop"
+display_name = "Frontier Shop"
+required_hub_level = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stations/ShopStation"]
+shape = SubResource("RectangleShape2D_station")
+
+[node name="Visual" type="ColorRect" parent="Stations/ShopStation"]
+offset_left = -12.0
+offset_top = -16.0
+offset_right = 12.0
+offset_bottom = 0.0
+color = Color(0.9, 0.8, 0.2, 1.0)
+
+[node name="Label" type="Label" parent="Stations/ShopStation"]
+offset_left = -35.0
+offset_top = -24.0
+offset_right = 35.0
+offset_bottom = -16.0
+text = "SHOP [E]"
+horizontal_alignment = 1
+visible = false
+
 [node name="DeploymentStation" type="Area2D" parent="Stations"]
 position = Vector2(400, 240)
 collision_layer = 8

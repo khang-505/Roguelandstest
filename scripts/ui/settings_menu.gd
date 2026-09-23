@@ -20,7 +20,15 @@ static var user_settings: Dictionary = {
 
 func _ready() -> void:
 	load_settings()
+	apply_settings_to_audio()
 	update_display()
+
+static func apply_settings_to_audio() -> void:
+	if Engine.has_singleton("AudioManager") or ResourceLoader.exists("res://scripts/audio/audio_manager.gd"):
+		var m = user_settings.get("master_volume", 1.0)
+		var mus = user_settings.get("music_volume", 0.8)
+		var sfx = user_settings.get("sfx_volume", 1.0)
+		AudioManager.set_volumes(m, mus, sfx)
 
 static func save_settings() -> bool:
 	var json_string = JSON.stringify(user_settings, "\t")

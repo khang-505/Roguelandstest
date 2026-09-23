@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://d1abx0abcxyz2"]
+
+[ext_resource type="Script" path="res://scripts/items/resource_node.gd" id="1_abcxyz2"]
+[ext_resource type="Texture2D" path="res://art/resources/ember_crystal.png" id="2_cryst"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_abcxyz2"]
+size = Vector2(24, 24)
+
+[node name="ResourceNode" type="StaticBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_abcxyz2")
+
+[node name="Visual" type="Sprite2D" parent="."]
+position = Vector2(0, -12)
+texture = ExtResource("2_cryst")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -12)
+shape = SubResource("RectangleShape2D_abcxyz2")

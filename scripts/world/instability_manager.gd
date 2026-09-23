@@ -64,8 +64,8 @@ func mutate_enemy_to_elite(enemy: CharacterBody2D) -> bool:
 		enemy.set("max_hp", new_hp)
 		enemy.set("current_hp", new_hp)
 
-	if enemy.get("enemy_data") != null and enemy.enemy_data:
-		enemy.enemy_data.touch_damage = int(enemy.enemy_data.touch_damage * 1.30) # +30% Damage
+	# BUG-012: DO NOT modify enemy.enemy_data directly because it's a shared Resource.
+	# EnemyBase already applies a 1.5x multiplier to damage if is_elite is true.
 
 	if enemy.has_node("Sprite2D"):
 		var sprite = enemy.get_node("Sprite2D") as Sprite2D

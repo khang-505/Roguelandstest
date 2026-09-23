@@ -28,7 +28,7 @@ var attack_cooldown_timer: float = 0.0
 var target_player: CharacterBody2D = null
 
 @onready var hurtbox: Hurtbox = $Hurtbox if has_node("Hurtbox") else null
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+@onready var visual: Sprite2D = $Visual if has_node("Visual") else null
 
 func _ready() -> void:
 	current_hp = max_hp
@@ -118,8 +118,8 @@ func _process_combat_state(_delta: float) -> void:
 	var dir = signf(target_player.global_position.x - global_position.x)
 	velocity.x = dir * move_speed
 
-	if sprite and dir != 0.0:
-		sprite.flip_h = (dir == -1)
+	if visual and dir != 0.0:
+		visual.flip_h = (dir == -1)
 
 	if attack_cooldown_timer <= 0.0 and dist <= 160.0:
 		_execute_boss_attack()
@@ -145,4 +145,49 @@ func _die() -> void:
 	velocity = Vector2.ZERO
 	boss_defeated.emit(boss_id, global_position)
 	EventBus.enemy_died.emit(global_position, boss_id)
+	_spawn_boss_loot()
 	queue_free()
+
+func _spawn_boss_loot() -> void:
+	# Boss always drops a guaranteed epic/legendary equipment piece + bonus credits
+	var item_scene = load("res://scenes/items/item_drop.tscn")
+	if item_scene == null:
+		return
+	
+	# Drop 1: Guaranteed high-rarity weapon or equipment
+	var eq_roll = randf()
+	var drop_id: String
+	var drop_type: String
+	var rarity: String
+	if eq_roll < 0.40:
+		drop_id = "void_blade"; rarity = "legendary"; drop_type = "equipment"
+	elif eq_roll < 0.70:
+		drop_id = "titan_spear"; rarity = "rare"; drop_type = "equipment"
+	else:
+		drop_id = "crit_lens"; rarity = "epic"; drop_type = "equipment"
+	
+	var item1 = item_scene.instantiate() as Node2D
+	item1.set("item_id", drop_id)
+	item1.set("item_type", drop_type)
+	item1.set("amount", 1)
+	item1.set("rarity_id", rarity)
+	item1.global_position = global_position + Vector2(-20, 0)
+	get_parent().call_deferred("add_child", item1)
+	
+	# Drop 2: Bonus Credits (large amount)
+	var item2 = item_scene.instantiate() as Node2D
+	item2.set("item_id", "credit")
+	item2.set("item_type", "credit")
+	item2.set("amount", randi_range(15, 25))
+	item2.set("rarity_id", "rare")
+	item2.global_position = global_position + Vector2(20, 0)
+	get_parent().call_deferred("add_child", item2)
+	
+	# Drop 3: Star Shards
+	var item3 = item_scene.instantiate() as Node2D
+	item3.set("item_id", "star_shard")
+	item3.set("item_type", "material")
+	item3.set("amount", randi_range(3, 6))
+	item3.set("rarity_id", "common")
+	item3.global_position = global_position
+	get_parent().call_deferred("add_child", item3)

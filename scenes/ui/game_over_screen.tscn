@@ -41,6 +41,15 @@ horizontal_alignment = 1
 [node name="Sep" type="HSeparator" parent="CenterBox/VBoxContainer"]
 layout_mode = 2
 
+[node name="HintLabel" type="Label" parent="CenterBox/VBoxContainer"]
+layout_mode = 2
+text = "Hint: ..."
+horizontal_alignment = 1
+modulate = Color(0.8, 0.8, 0.4, 1)
+
+[node name="Sep2" type="HSeparator" parent="CenterBox/VBoxContainer"]
+layout_mode = 2
+
 [node name="RestartButton" type="Button" parent="CenterBox/VBoxContainer"]
 layout_mode = 2
 text = "RETRY EXPEDITION"

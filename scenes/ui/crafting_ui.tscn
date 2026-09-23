@@ -18,46 +18,65 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -100.0
-offset_right = 160.0
-offset_bottom = 100.0
+offset_left = -180.0
+offset_top = -120.0
+offset_right = 180.0
+offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.12, 0.16, 0.95)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -140.0
-offset_top = -80.0
-offset_right = 140.0
-offset_bottom = 80.0
+offset_left = -160.0
+offset_top = -105.0
+offset_right = 160.0
+offset_bottom = 105.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "FORGE CRAFTING STATION"
+text = "FORGE CRAFTING STATION (XƯỞNG CHẾ TẠO)"
 horizontal_alignment = 1
 
-[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+[node name="StatusLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Materials: Ember Ore (0) | Cryo Crystal (0) | Bio Sample (0)"
+text = "Kho: Ember Ore (0) | Cryo Crystal (0) | Star Shards (0)"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+[node name="FeedbackLabel" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Chọn vũ khí muốn chế tạo bên dưới:"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="CraftButton" type="Button" parent="VBoxContainer"]
+[node name="CraftPlasmaButton" type="Button" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Craft Plasma Cutter Mk2"
+text = "Chế tạo Plasma Cutter (2 Ember Ore, 1 Star Shard)"
 
-[node name="CloseButton" type="Button" parent="VBoxContainer"]
+[node name="CraftFrostButton" type="Button" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "CLOSE FORGE"
+text = "Chế tạo Frost Rifle (2 Cryo Crystal, 1 Star Shard)"
+
+[node name="CraftEmberButton" type="Button" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Chế tạo Ember Staff (3 Ember Ore, 1 Star Shard)"
+
+[node name="CloseButton" type="Button" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "ĐÓNG XƯỞNG CHẾ TẠO"

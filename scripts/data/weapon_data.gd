@@ -132,6 +132,14 @@ static func get_weapon(w_id: String) -> WeaponData:
 	var fallback = WeaponData.new()
 	fallback.id = w_id
 	match w_id:
+		"titan_spear":
+			fallback.display_name = "Titan Spear"
+			fallback.category = WeaponCategory.MELEE
+			fallback.damage_type = DamageType.PHYSICAL
+			fallback.base_damage = 32
+			fallback.attack_speed = 1.1
+			fallback.attack_range = 56.0
+			fallback.knockback_force = 220.0
 		"frost_rifle":
 			fallback.display_name = "Frost Rifle"
 			fallback.category = WeaponCategory.RANGED
@@ -147,13 +155,14 @@ static func get_weapon(w_id: String) -> WeaponData:
 		"void_blade":
 			fallback.display_name = "Void Blade"
 			fallback.category = WeaponCategory.MELEE
-			fallback.damage_type = DamageType.VOID
+			fallback.damage_type = DamageType.ELECTRIC
 			fallback.base_damage = 28
 			fallback.attack_speed = 1.8
+			fallback.critical_chance = 0.25
 		_:
 			fallback.display_name = "Plasma Cutter"
 			fallback.category = WeaponCategory.MELEE
-			fallback.damage_type = DamageType.PHYSICAL
+			fallback.damage_type = DamageType.FIRE
 			fallback.base_damage = 18
 			fallback.attack_speed = 1.5
 

@@ -53,8 +53,9 @@ func test_hud_controller() -> bool:
 	if scene == null:
 		return false
 	var instance = scene.instantiate() as HUDController
-	instance._ready()
+	add_child(instance)
 	var ok = (instance != null)
+	remove_child(instance)
 	instance.free()
 	return ok
 

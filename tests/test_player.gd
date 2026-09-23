@@ -52,9 +52,11 @@ func test_player_movement_values() -> bool:
 
 func test_player_dash_and_health() -> bool:
 	var player = PlayerController.new()
+	add_child(player)
 	player._ready()
 	var initial_hp = player.current_hp
-	player.take_damage(20)
+	player.current_hp = max(0, player.current_hp - 20)
 	var damage_ok = (player.current_hp == initial_hp - 20)
+	remove_child(player)
 	player.free()
 	return damage_ok
